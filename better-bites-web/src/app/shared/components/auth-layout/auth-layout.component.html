@@ -1,0 +1,48 @@
+<div class="relative grid min-h-screen overflow-hidden bg-gradient-to-br from-sky-50 via-white to-emerald-50 lg:grid-cols-[1.1fr,0.9fr]">
+  <div class="relative flex items-center justify-center px-6 py-12 lg:px-12">
+    <div class="absolute left-8 top-12 h-40 w-40 animate-[float_10s_ease-in-out_infinite] rounded-full bg-sky-200/60 blur-3xl"></div>
+    <div class="absolute bottom-10 right-12 h-56 w-56 animate-[float_12s_ease-in-out_infinite] rounded-full bg-emerald-200/40 blur-3xl"></div>
+    <div class="relative max-w-lg space-y-6 text-center lg:text-left">
+      <div class="inline-flex items-center gap-3 rounded-full bg-white/80 px-4 py-2 shadow-lg shadow-sky-100/70">
+        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-sky-500 text-lg font-bold text-white">BB</span>
+        <div class="text-left">
+          <p class="text-xs font-semibold uppercase tracking-[0.35em] text-sky-600">Better Bites</p>
+          <p class="text-sm text-slate-500">Fuel every day with balance</p>
+        </div>
+      </div>
+      <h1 class="text-4xl font-semibold leading-snug text-slate-900">Personal coaching for food, movement, and hydration.</h1>
+      <p class="text-sm text-slate-600">
+        Stay accountable with streaks, visualize your progress, and unlock curated guidance tailored to your goals.
+      </p>
+      <div class="grid gap-4 text-left text-sm text-slate-700">
+        <div class="glass-card flex items-start gap-4 p-4">
+          <span class="flex h-10 w-10 items-center justify-center rounded-full bg-sky-100 text-sky-500">1</span>
+          <div>
+            <p class="font-semibold text-slate-900">One dashboard, every habit</p>
+            <p class="text-xs text-slate-600">Log your meals, hydration, and activity in seconds with barcode scans and quick-add gestures.</p>
+          </div>
+        </div>
+        <div class="glass-card flex items-start gap-4 p-4">
+          <span class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-500">2</span>
+          <div>
+            <p class="font-semibold text-slate-900">Celebrate streaks visually</p>
+            <p class="text-xs text-slate-600">Daily streaks and motivational nudges keep you focused on consistent wins.</p>
+          </div>
+        </div>
+        <div class="glass-card flex items-start gap-4 p-4">
+          <span class="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 text-amber-500">3</span>
+          <div>
+            <p class="font-semibold text-slate-900">Insights you can feel</p>
+            <p class="text-xs text-slate-600">Watch your personal avatar evolve with your stats and see trends that matter.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="relative flex items-center justify-center bg-white/90 px-6 py-12 lg:px-10">
+    <div class="absolute inset-x-12 top-10 h-32 rounded-3xl bg-gradient-to-r from-sky-100 via-transparent to-emerald-100 blur-2xl"></div>
+    <div class="relative w-full max-w-md space-y-6">
+      <router-outlet />
+    </div>
+  </div>
+</div>

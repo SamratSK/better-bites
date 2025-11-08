@@ -1,0 +1,47 @@
+<div class="space-y-6">
+  <header class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-primary-200">Settings</p>
+    <h1 class="mt-2 text-2xl font-semibold text-slate-100">Personalize your experience</h1>
+    <p class="mt-1 text-sm text-slate-400">Control reminders, privacy, and data exports.</p>
+  </header>
+
+  <section class="grid gap-6 md:grid-cols-2">
+    <div class="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+      <h2 class="text-lg font-semibold text-slate-100">Reminders</h2>
+      <form class="space-y-4" [formGroup]="notificationsForm">
+        <label class="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/70 px-4 py-3 text-sm text-slate-200">
+          <span>Email reminders</span>
+          <input type="checkbox" formControlName="emailReminders" class="h-4 w-4 rounded border-slate-700 bg-slate-900" />
+        </label>
+        <label class="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/70 px-4 py-3 text-sm text-slate-200">
+          <span>Push notifications</span>
+          <input type="checkbox" formControlName="pushReminders" class="h-4 w-4 rounded border-slate-700 bg-slate-900" />
+        </label>
+        <div class="rounded-xl border border-slate-800 bg-slate-900/70 p-4 text-sm text-slate-200">
+          <p class="font-semibold text-slate-100">Quiet hours</p>
+          <div class="mt-3 grid grid-cols-2 gap-3 text-xs text-slate-400">
+            <label class="space-y-1">
+              <span>Start</span>
+              <input type="time" formControlName="quietHoursStart" class="w-full rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-slate-100" />
+            </label>
+            <label class="space-y-1">
+              <span>End</span>
+              <input type="time" formControlName="quietHoursEnd" class="w-full rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-slate-100" />
+            </label>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-6 text-sm text-slate-200">
+      <h2 class="text-lg font-semibold text-slate-100">Data control</h2>
+      <p class="text-xs text-slate-400">Export your data or request deletion to comply with privacy regulations.</p>
+      <button class="w-full rounded-lg border border-slate-800 bg-slate-900 px-4 py-2 text-sm font-semibold text-slate-200 hover:border-primary-400 hover:text-primary-100">
+        Download data export
+      </button>
+      <button class="w-full rounded-lg border border-red-600/60 bg-red-500/10 px-4 py-2 text-sm font-semibold text-red-300 hover:bg-red-500/20">
+        Request account deletion
+      </button>
+    </div>
+  </section>
+</div>

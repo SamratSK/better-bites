@@ -1,0 +1,134 @@
+<div class="mx-auto max-w-3xl space-y-8">
+  <header class="space-y-2 text-center">
+    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-primary-200">Welcome</p>
+    <h1 class="text-3xl font-semibold text-slate-100">Let’s personalize your journey</h1>
+    <p class="text-sm text-slate-400">
+      These details help us tailor calories, hydration, and motivation to match your goals.
+    </p>
+  </header>
+
+  <form class="grid gap-6 rounded-2xl border border-slate-800 bg-slate-950/60 p-8" [formGroup]="form" (ngSubmit)="completeOnboarding()">
+    <section class="grid gap-4 md:grid-cols-2">
+      <div>
+        <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">Display name</label>
+        <input
+          formControlName="displayName"
+          type="text"
+          class="w-full rounded-lg border border-slate-800 bg-slate-900 px-4 py-2 text-sm text-slate-100 focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500/30"
+          placeholder="What should we call you?"
+        />
+      </div>
+      <div>
+        <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">Gender expression</label>
+        <select
+          formControlName="gender"
+          class="w-full rounded-lg border border-slate-800 bg-slate-900 px-4 py-2 text-sm text-slate-100 focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500/30"
+        >
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="non-binary">Non-binary</option>
+          <option value="prefer_not_to_say">Prefer not to say</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="grid gap-4 md:grid-cols-3">
+      <div>
+        <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">Height (cm)</label>
+        <input
+          formControlName="heightCm"
+          type="number"
+          class="w-full rounded-lg border border-slate-800 bg-slate-900 px-4 py-2 text-sm text-slate-100 focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500/30"
+        />
+      </div>
+      <div>
+        <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">Weight (kg)</label>
+        <input
+          formControlName="weightKg"
+          type="number"
+          class="w-full rounded-lg border border-slate-800 bg-slate-900 px-4 py-2 text-sm text-slate-100 focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500/30"
+        />
+      </div>
+      <div>
+        <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">Date of birth</label>
+        <input
+          formControlName="dateOfBirth"
+          type="date"
+          class="w-full rounded-lg border border-slate-800 bg-slate-900 px-4 py-2 text-sm text-slate-100 focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500/30"
+        />
+      </div>
+    </section>
+
+    <section class="grid gap-4 md:grid-cols-2">
+      <div>
+        <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">Avatar preference</label>
+        <select
+          formControlName="avatarPreference"
+          class="w-full rounded-lg border border-slate-800 bg-slate-900 px-4 py-2 text-sm text-slate-100 focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500/30"
+        >
+          <option value="male">Masculine</option>
+          <option value="female">Feminine</option>
+        </select>
+      </div>
+      <div>
+        <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">Activity level</label>
+        <select
+          formControlName="activityLevel"
+          class="w-full rounded-lg border border-slate-800 bg-slate-900 px-4 py-2 text-sm text-slate-100 focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500/30"
+        >
+          <option value="sedentary">Sedentary</option>
+          <option value="light">Lightly active</option>
+          <option value="moderate">Moderately active</option>
+          <option value="active">Active</option>
+          <option value="athlete">Athlete</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="grid gap-4 md:grid-cols-3">
+      <div>
+        <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">Calorie goal</label>
+        <input
+          formControlName="caloriesTarget"
+          type="number"
+          class="w-full rounded-lg border border-slate-800 bg-slate-900 px-4 py-2 text-sm text-slate-100 focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500/30"
+        />
+      </div>
+      <div>
+        <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">Water goal (ml)</label>
+        <input
+          formControlName="waterMlTarget"
+          type="number"
+          class="w-full rounded-lg border border-slate-800 bg-slate-900 px-4 py-2 text-sm text-slate-100 focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500/30"
+        />
+      </div>
+      <div>
+        <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">Steps goal</label>
+        <input
+          formControlName="stepsTarget"
+          type="number"
+          class="w-full rounded-lg border border-slate-800 bg-slate-900 px-4 py-2 text-sm text-slate-100 focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500/30"
+        />
+      </div>
+    </section>
+
+    <div class="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-sm text-slate-300">
+      <div>
+        <p class="font-semibold text-slate-100">Daily streak checklist</p>
+        <p class="text-xs text-slate-500">We’ll remind you to hit each target so your streak stays alive.</p>
+      </div>
+      <span class="iconify text-3xl text-primary-300" data-icon="solar:fire-bold"></span>
+    </div>
+
+    <button
+      type="submit"
+      class="flex items-center justify-center gap-2 rounded-xl bg-primary-500 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-primary-400 disabled:cursor-wait disabled:opacity-70"
+      [disabled]="isSubmitting()"
+    >
+      @if (isSubmitting()) {
+        <span class="iconify animate-spin" data-icon="mdi:loading"></span>
+      }
+      Save and continue
+    </button>
+  </form>
+</div>

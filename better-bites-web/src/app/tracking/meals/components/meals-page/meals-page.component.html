@@ -1,0 +1,125 @@
+<div class="grid gap-8 lg:grid-cols-[1.25fr,0.75fr]">
+  <section class="space-y-6">
+    <div class="glass-card p-6">
+      <h1 class="text-xl font-semibold text-slate-900">Scan a barcode</h1>
+      <p class="mt-1 text-sm text-slate-500">Instantly log packaged foods using the Better Bites cache.</p>
+
+      <form class="mt-4 flex flex-col gap-4" [formGroup]="scanForm" (ngSubmit)="fetchBarcode()">
+        <input
+          type="text"
+          formControlName="barcode"
+          placeholder="Enter or scan barcode"
+          class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 focus:border-sky-300 focus:outline-none focus:ring-2 focus:ring-sky-200"
+        />
+        @if (errorMessage()) {
+          <p class="text-xs text-red-500">{{ errorMessage() }}</p>
+        }
+        <button
+          type="submit"
+          class="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sky-500 to-emerald-500 px-4 py-2 text-sm font-semibold text-white shadow-lg transition hover:from-sky-400 hover:to-emerald-400 disabled:opacity-70"
+          [disabled]="isLoading()"
+        >
+          @if (isLoading()) {
+            <span class="iconify animate-spin" data-icon="mdi:loading"></span>
+          }
+          Fetch nutrition info
+        </button>
+      </form>
+
+      @if (lookupResult()) {
+        <div class="mt-6 rounded-2xl border border-sky-100 bg-white/80 p-5 text-sm text-slate-600 shadow-inner">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-lg font-semibold text-slate-900">{{ lookupResult().name }}</p>
+              <p class="text-xs text-slate-500">{{ lookupResult().brand ?? 'OpenFoodFacts' }}</p>
+            </div>
+            <span class="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-600">{{ lookupResult().calories }} kcal</span>
+          </div>
+          <dl class="mt-4 grid grid-cols-3 gap-3 text-xs text-slate-500">
+            <div class="rounded-xl border border-slate-200 bg-white/90 p-3">
+              <dt class="text-slate-500">Protein</dt>
+              <dd class="text-lg font-semibold text-sky-600">{{ lookupResult()?.macros?.protein ?? 0 }}g</dd>
+            </div>
+            <div class="rounded-xl border border-slate-200 bg-white/90 p-3">
+              <dt class="text-slate-500">Carbs</dt>
+              <dd class="text-lg font-semibold text-sky-600">{{ lookupResult()?.macros?.carbs ?? 0 }}g</dd>
+            </div>
+            <div class="rounded-xl border border-slate-200 bg-white/90 p-3">
+              <dt class="text-slate-500">Fat</dt>
+              <dd class="text-lg font-semibold text-sky-600">{{ lookupResult()?.macros?.fat ?? 0 }}g</dd>
+            </div>
+          </dl>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <button
+              type="button"
+              class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-sky-500 to-emerald-500 px-4 py-2 text-xs font-semibold text-white shadow transition hover:from-sky-400 hover:to-emerald-400"
+              (click)="logLookupResult('meal')"
+            >
+              <span class="iconify text-sm" data-icon="mdi:plus-circle-outline"></span>
+              Add to today’s log
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="glass-card p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-lg font-semibold text-slate-900">Today’s meals</h2>
+          <p class="text-xs text-slate-500">{{ meals().length }} logged • {{ totalCalories() | number:'1.0-0' }} kcal</p>
+        </div>
+        <button
+          type="button"
+          class="rounded-xl border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:border-sky-300 hover:text-sky-600"
+        >
+          Add manual entry
+        </button>
+      </div>
+      <div class="mt-4 space-y-3 text-sm text-slate-200">
+        @if (mealsLoading()) {
+          <div class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white/80 px-4 py-3 text-xs text-slate-500">
+            <span class="iconify animate-spin text-base" data-icon="mdi:loading"></span>
+            Loading meals…
+          </div>
+        } @else if (meals().length) {
+          @for (meal of meals(); track meal.id) {
+            <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-white/85 px-4 py-3 text-slate-700">
+              <div>
+                <p class="font-semibold text-slate-800">{{ meal.description }}</p>
+                <p class="text-xs text-slate-500">{{ meal.mealType | titlecase }} • {{ meal.calories | number:'1.0-0' }} kcal</p>
+                <p class="mt-1 text-[11px] text-slate-400">P: {{ meal.protein | number:'1.0-0' }}g • C: {{ meal.carbs | number:'1.0-0' }}g • F: {{ meal.fat | number:'1.0-0' }}g</p>
+              </div>
+              <span class="text-xs text-slate-400">{{ meal.createdAt | date:'shortTime' }}</span>
+            </div>
+          }
+        } @else {
+          <p class="rounded-xl border border-dashed border-slate-200 bg-white/70 px-4 py-6 text-center text-xs text-slate-500">
+            No meals logged yet. Scan a barcode or add a manual entry to get started.
+          </p>
+        }
+      </div>
+    </div>
+  </section>
+
+  <aside class="space-y-6">
+    <div class="glass-card space-y-2 p-6 text-sm text-slate-600">
+      <p class="text-xs font-semibold uppercase tracking-[0.3em] text-sky-500">Streak insight</p>
+      <h3 class="text-lg font-semibold text-slate-900">3 days logging meals</h3>
+      <p class="text-xs text-slate-500">Keep it going to unlock a new badge this week.</p>
+    </div>
+    <div class="glass-card p-6">
+      <p class="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-500">Quick actions</p>
+      <ul class="mt-4 space-y-3 text-sm text-slate-600">
+        <li class="flex items-center justify-between rounded-xl border border-slate-200 bg-white/80 px-4 py-3">
+          <span>Save favorite meals</span>
+          <span class="iconify text-lg text-emerald-500" data-icon="mdi:star"></span>
+        </li>
+        <li class="flex items-center justify-between rounded-xl border border-slate-200 bg-white/80 px-4 py-3">
+          <span>Plan tomorrow’s meals</span>
+          <span class="iconify text-lg text-emerald-500" data-icon="mdi:calendar-check"></span>
+        </li>
+      </ul>
+    </div>
+  </aside>
+</div>

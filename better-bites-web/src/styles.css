@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+body {
+  @apply min-h-screen bg-gradient-to-br from-slate-50 via-white to-sky-100 text-slate-900 antialiased;
+}
+
+.glass-card {
+  @apply rounded-3xl border border-white/60 bg-white/70 shadow-xl backdrop-blur-md;
+}
+
+.floating-shape {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(60px);
+  opacity: 0.7;
+  animation: float 12s ease-in-out infinite;
+}
+
+.floating-shape.delay-1 {
+  animation-delay: 3s;
+}
+
+.floating-shape.delay-2 {
+  animation-delay: 6s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(20px, -30px, 0) scale(1.05);
+  }
+}

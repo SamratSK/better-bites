@@ -1,0 +1,99 @@
+<div class="flex min-h-screen bg-transparent">
+  <aside class="relative hidden h-screen w-72 shrink-0 flex-col rounded-3xl border border-white/70 bg-white/80 p-6 shadow-2xl backdrop-blur lg:flex">
+    <div class="mb-8 flex items-center gap-3">
+      <div class="flex h-11 w-11 items-center justify-center rounded-full bg-sky-500 text-lg font-bold text-white shadow-md">
+        BB
+      </div>
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-[0.35em] text-sky-600">Better Bites</p>
+        <p class="text-sm text-slate-500">Daily balance guide</p>
+      </div>
+    </div>
+
+    <nav class="flex flex-1 flex-col gap-2 text-sm font-medium">
+      @for (link of navLinks; track link.label) {
+        <a
+          routerLinkActive="bg-sky-500/15 text-sky-700 shadow-sm"
+          [routerLink]="link.routerLink"
+          [routerLinkActiveOptions]="{ exact: link.exact ?? false }"
+          class="flex items-center gap-3 rounded-xl px-4 py-2 text-slate-600 transition hover:bg-sky-100 hover:text-sky-700"
+        >
+          <span class="iconify text-lg" [attr.data-icon]="link.icon"></span>
+          <span>{{ link.label }}</span>
+        </a>
+      }
+
+      @if (isAdmin()) {
+        <div class="mt-6 space-y-2 border-t border-slate-200 pt-4">
+          <p class="text-xs font-semibold uppercase tracking-[0.35em] text-slate-400">Admin</p>
+          <a
+            routerLinkActive="bg-emerald-500/15 text-emerald-600 shadow-sm"
+            [routerLink]="adminLink.routerLink"
+            class="flex items-center gap-3 rounded-xl px-4 py-2 text-slate-600 transition hover:bg-emerald-100 hover:text-emerald-600"
+          >
+            <span class="iconify text-lg" [attr.data-icon]="adminLink.icon"></span>
+            <span>{{ adminLink.label }}</span>
+          </a>
+        </div>
+      }
+    </nav>
+
+    <div class="mt-8 space-y-3 rounded-2xl bg-gradient-to-br from-sky-100 via-white to-emerald-100 p-5 shadow-inner">
+      <p class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-sky-600">
+        <span class="iconify text-base" data-icon="mdi:trending-up"></span>
+        Progress pulse
+      </p>
+      <p class="text-3xl font-semibold text-slate-800">82%</p>
+      <p class="text-xs text-slate-500">Keep logging meals and hydration today to keep the streak glowing.</p>
+    </div>
+  </aside>
+
+  <div class="relative flex min-h-screen flex-1 flex-col">
+    <header class="sticky top-0 z-20 border-b border-white/70 bg-white/80 backdrop-blur-xl">
+      <div class="mx-auto flex h-20 w-full max-w-6xl items-center justify-between px-4 lg:px-8">
+        <div class="flex items-center gap-4">
+          <button
+            type="button"
+            class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:border-sky-400 hover:text-sky-500 lg:hidden"
+          >
+            <span class="iconify text-xl" data-icon="mdi:menu"></span>
+            <span class="sr-only">Toggle Navigation</span>
+          </button>
+          <div>
+            <p class="text-sm font-semibold text-slate-700">Welcome back, {{ user()?.user_metadata?.['display_name'] ?? 'Athlete' }}!</p>
+            <p class="text-xs text-slate-500">Let’s make today’s nutrition and movement effortless.</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <a
+            routerLink="/tracking/meals"
+            class="hidden items-center gap-2 rounded-xl border border-sky-200 bg-white px-3 py-2 text-sm font-medium text-sky-600 shadow-sm transition hover:bg-sky-100 lg:flex"
+          >
+            <span class="iconify text-lg" data-icon="mdi:barcode-scan"></span>
+            Quick log
+          </a>
+          <a
+            routerLink="/tracking/water"
+            class="hidden h-10 items-center justify-center rounded-xl border border-emerald-200 bg-white px-3 text-sm font-medium text-emerald-600 shadow-sm transition hover:bg-emerald-100 lg:flex"
+          >
+            <span class="iconify text-lg" data-icon="mdi:cup-water"></span>
+          </a>
+          <div class="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-sky-500 to-emerald-500 text-sm font-semibold text-white shadow-lg">
+            {{ initials() }}
+          </div>
+          <button
+            type="button"
+            class="h-10 rounded-xl border border-slate-200 px-3 text-sm font-medium text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-500"
+            (click)="signOut()"
+          >
+            Sign out
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="relative mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-8 lg:px-8">
+      <router-outlet />
+    </main>
+  </div>
+</div>

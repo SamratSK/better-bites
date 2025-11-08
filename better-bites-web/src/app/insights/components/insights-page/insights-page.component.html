@@ -1,0 +1,78 @@
+<div class="grid gap-8 lg:grid-cols-2">
+  <section class="glass-card p-6">
+    <h1 class="text-xl font-semibold text-slate-900">Calorie trend</h1>
+    <p class="text-xs text-slate-500">Daily totals vs target (kcal)</p>
+    <div class="mt-4 grid grid-cols-7 gap-2">
+      @if (loading()) {
+        <div class="col-span-7 flex justify-center rounded-xl border border-dashed border-slate-200 bg-white/70 py-6 text-xs text-slate-500">
+          Loading weekly data…
+        </div>
+      } @else if (points().length) {
+        @for (point of points(); track point.logDate) {
+          <div class="flex flex-col items-center gap-2">
+            <div class="flex h-40 w-8 items-end rounded-lg bg-slate-100">
+              <div
+                class="w-full rounded-lg bg-gradient-to-t from-sky-500 to-emerald-400"
+                [style.height.%]="(((point.calories / calorieReference) > 1 ? 1 : point.calories / calorieReference) * 100)"
+              ></div>
+            </div>
+            <span class="text-xs text-slate-500">{{ point.dateLabel }}</span>
+          </div>
+        }
+      } @else {
+        <div class="col-span-7 rounded-xl border border-dashed border-slate-200 bg-white/70 p-6 text-center text-xs text-slate-500">
+          Log meals for a few days to unlock this chart.
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="glass-card p-6">
+    <h1 class="text-xl font-semibold text-slate-900">Hydration consistency</h1>
+    <p class="text-xs text-slate-500">Liters logged per day</p>
+    <div class="mt-4 grid grid-cols-7 gap-2">
+      @if (loading()) {
+        <div class="col-span-7 flex justify-center rounded-xl border border-dashed border-slate-200 bg-white/70 py-6 text-xs text-slate-500">
+          Loading hydration data…
+        </div>
+      } @else if (points().length) {
+        @for (point of points(); track point.logDate) {
+          <div class="flex flex-col items-center gap-2">
+            <div class="flex h-32 w-8 items-end rounded-lg bg-slate-100">
+              <div
+                class="w-full rounded-lg bg-emerald-400"
+                [style.height.%]="(((point.waterLiters / hydrationReferenceLiters) > 1 ? 1 : point.waterLiters / hydrationReferenceLiters) * 100)"
+              ></div>
+            </div>
+            <span class="text-xs text-slate-500">{{ point.dateLabel }}</span>
+          </div>
+        }
+      } @else {
+        <div class="col-span-7 rounded-xl border border-dashed border-slate-200 bg-white/70 p-6 text-center text-xs text-slate-500">
+          Log water entries to unlock hydration insights.
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="glass-card lg:col-span-2 p-6">
+    <h2 class="text-lg font-semibold text-slate-900">Weekly summary</h2>
+    <div class="mt-4 grid gap-4 md:grid-cols-3 text-sm text-slate-600">
+      <div class="rounded-xl border border-slate-200 bg-white/85 p-4">
+        <p class="text-xs uppercase tracking-widest text-slate-500">Avg calories</p>
+        <p class="mt-2 text-2xl font-semibold text-sky-600">{{ calorieAverage() | number:'1.0-0' }} kcal</p>
+        <p class="text-xs text-slate-500">Daily average (7d)</p>
+      </div>
+      <div class="rounded-xl border border-slate-200 bg-white/85 p-4">
+        <p class="text-xs uppercase tracking-widest text-slate-500">Avg hydration</p>
+        <p class="mt-2 text-2xl font-semibold text-emerald-600">{{ hydrationAverage() | number:'1.1-1' }} L</p>
+        <p class="text-xs text-slate-500">Daily average (7d)</p>
+      </div>
+      <div class="rounded-xl border border-slate-200 bg-white/85 p-4">
+        <p class="text-xs uppercase tracking-widest text-slate-500">Avg steps</p>
+        <p class="mt-2 text-2xl font-semibold text-amber-500">{{ stepsAverage() | number:'1.0-0' }}</p>
+        <p class="text-xs text-slate-500">Converted from activity logs</p>
+      </div>
+    </div>
+  </section>
+</div>

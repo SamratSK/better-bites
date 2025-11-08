@@ -1,0 +1,86 @@
+<div class="glass-card space-y-6 p-8">
+  <div class="text-center">
+    <h2 class="text-2xl font-semibold text-slate-900">Create your Better Bites account</h2>
+    <p class="mt-2 text-sm text-slate-500">Log meals, hydration, and workouts with a few taps.</p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
+    <div>
+      <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+        Email
+      </label>
+      <input
+        type="email"
+        formControlName="email"
+        class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 placeholder-slate-400 outline-none transition focus:border-emerald-300 focus:ring-2 focus:ring-emerald-200"
+        placeholder="you@example.com"
+        autocomplete="email"
+      />
+      @if (form.get('email')?.invalid && form.get('email')?.touched) {
+        <p class="mt-1 text-xs text-red-500">Please enter a valid email address.</p>
+      }
+    </div>
+
+    <div>
+      <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+        Password
+      </label>
+      <input
+        type="password"
+        formControlName="password"
+        class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 placeholder-slate-400 outline-none transition focus:border-emerald-300 focus:ring-2 focus:ring-emerald-200"
+        placeholder="Minimum 6 characters"
+        autocomplete="new-password"
+      />
+      @if (form.get('password')?.invalid && form.get('password')?.touched) {
+        <p class="mt-1 text-xs text-red-500">Password must be at least 6 characters.</p>
+      }
+    </div>
+
+    <div>
+      <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+        Confirm Password
+      </label>
+      <input
+        type="password"
+        formControlName="confirmPassword"
+        class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 placeholder-slate-400 outline-none transition focus:border-emerald-300 focus:ring-2 focus:ring-emerald-200"
+        placeholder="Re-type password"
+        autocomplete="new-password"
+      />
+    </div>
+
+    @if (errorMessage()) {
+      <div class="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
+        {{ errorMessage() }}
+      </div>
+    }
+
+    @if (successMessage()) {
+      <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-600">
+        {{ successMessage() }}
+      </div>
+    }
+
+    <button
+      type="submit"
+      class="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-sky-400 px-4 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:from-emerald-300 hover:to-sky-300 disabled:cursor-not-allowed disabled:opacity-60"
+      [disabled]="isSubmitting()"
+    >
+      @if (isSubmitting()) {
+        <span class="iconify mr-2 animate-spin text-lg" data-icon="mdi:loading"></span>
+      }
+      Create account
+    </button>
+  </form>
+
+  <div class="rounded-2xl border border-slate-200 bg-white/80 p-4 text-xs text-slate-500">
+    <p class="font-semibold text-slate-700">Already have an account?</p>
+    <p class="mt-1 text-xs text-slate-500">
+      <a routerLink="/auth/login" class="inline-flex items-center gap-2 text-sky-600 underline decoration-dotted">
+        Sign in instead
+        <span class="iconify text-base" data-icon="mdi:arrow-right"></span>
+      </a>
+    </p>
+  </div>
+</div>

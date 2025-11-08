@@ -1,0 +1,77 @@
+<div class="space-y-6">
+  <header class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-primary-200">Admin console</p>
+    <h1 class="mt-2 text-2xl font-semibold text-slate-100">Operational overview</h1>
+    <p class="mt-1 text-sm text-slate-400">Manage content, monitor flagged entries, and support members.</p>
+  </header>
+
+  <section class="grid gap-4 md:grid-cols-3">
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 text-sm text-slate-200">
+      <p class="text-xs uppercase tracking-widest text-slate-500">Users</p>
+      <p class="mt-2 text-3xl font-semibold text-primary-100">
+        @if (loading()) {
+          <span class="inline-flex h-6 w-12 animate-pulse rounded-full bg-slate-700"></span>
+        } @else {
+          {{ summary()?.memberCount ?? 0 | number:'1.0-0' }}
+        }
+      </p>
+      <p class="text-xs text-slate-400">Active profiles</p>
+    </div>
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 text-sm text-slate-200">
+      <p class="text-xs uppercase tracking-widest text-slate-500">Motivational messages</p>
+      <p class="mt-2 text-3xl font-semibold text-primary-100">
+        @if (loading()) {
+          <span class="inline-flex h-6 w-12 animate-pulse rounded-full bg-slate-700"></span>
+        } @else {
+          {{ summary()?.motivationCount ?? 0 | number:'1.0-0' }}
+        }
+      </p>
+      <p class="text-xs text-slate-400">Active prompts</p>
+    </div>
+    <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 text-sm text-slate-200">
+      <p class="text-xs uppercase tracking-widest text-slate-500">Cached food items</p>
+      <p class="mt-2 text-3xl font-semibold text-primary-100">
+        @if (loading()) {
+          <span class="inline-flex h-6 w-16 animate-pulse rounded-full bg-slate-700"></span>
+        } @else {
+          {{ summary()?.cachedFoodCount ?? 0 | number:'1.0-0' }}
+        }
+      </p>
+      <p class="text-xs text-slate-400">Synced via cache service</p>
+    </div>
+  </section>
+
+  <section class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+    <div class="flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-slate-100">Flagged items</h2>
+      <button class="rounded-lg border border-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:border-primary-400 hover:text-primary-100">
+        View all
+      </button>
+    </div>
+    <div class="mt-4 space-y-3 text-sm text-slate-200">
+      @if (loading()) {
+        <div class="rounded-xl border border-slate-800 bg-slate-900/70 p-4 text-xs text-slate-500">
+          Syncing flagged items…
+        </div>
+      } @else if (flaggedItems().length) {
+        @for (item of flaggedItems(); track item.id) {
+          <div class="space-y-1 rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+            <div class="flex items-center justify-between text-xs text-slate-500">
+              <span>{{ item.type | titlecase }}</span>
+              <span class="rounded-full border border-slate-700 px-2 py-0.5 text-[10px] uppercase tracking-widest text-slate-300">{{ item.status | titlecase }}</span>
+            </div>
+            <p class="font-semibold text-slate-100">{{ item.reason }}</p>
+            <p class="text-xs text-slate-500">By {{ item.submittedBy }} • {{ item.submittedAt | date:'short' }}</p>
+            @if (item.handledBy) {
+              <p class="text-[11px] text-slate-500">Handled by {{ item.handledBy }}</p>
+            }
+          </div>
+        }
+      } @else {
+        <p class="rounded-xl border border-dashed border-slate-700 bg-slate-900/40 p-6 text-center text-sm text-slate-400">
+          No items require review right now.
+        </p>
+      }
+    </div>
+  </section>
+</div>

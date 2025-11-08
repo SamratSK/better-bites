@@ -1,0 +1,168 @@
+<div class="grid gap-8 lg:grid-cols-[1.25fr,0.75fr]">
+  <section class="space-y-6">
+    <div class="grid gap-4 md:grid-cols-3">
+      <div class="glass-card space-y-3 p-5">
+        <p class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-sky-500">
+          <span class="iconify text-base" data-icon="mdi:fire"></span>
+          Calories
+        </p>
+        <p class="text-3xl font-semibold text-slate-900">
+          @if (summaryLoading()) {
+            <span class="inline-flex h-6 w-14 animate-pulse rounded-full bg-slate-200"></span>
+          } @else {
+            {{ caloriesConsumed() | number:'1.0-0' }}
+          }
+        </p>
+        <p class="text-xs text-slate-500">
+          of {{ calorieTarget() ?? '—' }} kcal target
+        </p>
+        <a routerLink="/tracking/meals" class="inline-flex items-center gap-1 text-xs font-semibold text-sky-600">
+          Log meals
+          <span class="iconify text-sm" data-icon="mdi:arrow-top-right"></span>
+        </a>
+      </div>
+      <div class="glass-card space-y-3 p-5">
+        <p class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-emerald-500">
+          <span class="iconify text-base" data-icon="mdi:cup-water"></span>
+          Hydration
+        </p>
+        <p class="text-3xl font-semibold text-slate-900">
+          @if (summaryLoading()) {
+            <span class="inline-flex h-6 w-16 animate-pulse rounded-full bg-slate-200"></span>
+          } @else {
+            {{ hydrationLiters() | number:'1.1-1' }}L
+          }
+        </p>
+        <p class="text-xs text-slate-500">
+          of {{ hydrationTargetLiters() | number:'1.1-1' }}L target
+        </p>
+        <a routerLink="/tracking/water" class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600">
+          Add water
+          <span class="iconify text-sm" data-icon="mdi:arrow-top-right"></span>
+        </a>
+      </div>
+      <div class="glass-card space-y-3 p-5">
+        <p class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-amber-500">
+          <span class="iconify text-base" data-icon="mdi:run"></span>
+          Activity
+        </p>
+        <p class="text-3xl font-semibold text-slate-900">
+          @if (summaryLoading()) {
+            <span class="inline-flex h-6 w-16 animate-pulse rounded-full bg-slate-200"></span>
+          } @else {
+            {{ activityMinutes() | number:'1.0-0' }} min
+          }
+        </p>
+        <p class="text-xs text-slate-500">Goal: {{ (stepsTarget() ?? 8000) | number:'1.0-0' }} steps</p>
+        <a routerLink="/tracking/activity" class="inline-flex items-center gap-1 text-xs font-semibold text-amber-600">
+          Log activity
+          <span class="iconify text-sm" data-icon="mdi:arrow-top-right"></span>
+        </a>
+      </div>
+    </div>
+
+    <div class="grid gap-6 lg:grid-cols-[1.1fr,0.9fr]">
+      <div class="glass-card p-6">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.35em] text-sky-500">Your avatar</p>
+            <h2 class="mt-2 text-xl font-semibold text-slate-900">{{ bmiCategory() }} BMI</h2>
+            <p class="mt-1 text-xs text-slate-500">Based on your latest measurements.</p>
+          </div>
+          <div class="text-right text-xs text-slate-500">
+            <p>Weight: {{ measurement()?.weightKg ?? '—' }} kg</p>
+            <p>Height: {{ measurement()?.heightCm ?? '—' }} cm</p>
+          </div>
+        </div>
+        <div class="mt-4 rounded-3xl border border-sky-100 bg-white/80 p-4 shadow-inner">
+          <app-avatar-canvas [bmi]="bmi()" [gender]="profile()?.avatarPreference ?? 'male'"></app-avatar-canvas>
+        </div>
+      </div>
+
+      <div class="flex h-full flex-col gap-4">
+        <div class="glass-card grow p-5">
+          <p class="text-xs font-semibold uppercase tracking-[0.3em] text-sky-500">Today’s motivation</p>
+          <div class="mt-3 space-y-3 text-sm text-slate-600">
+            @if (messages().length) {
+              <p class="text-lg font-semibold text-slate-800">“{{ messages()[0].message }}”</p>
+              <p class="text-xs text-slate-500">Category: {{ messages()[0].category | titlecase }}</p>
+            } @else {
+              <p class="text-sm text-slate-500">Admins can add motivational messages in Supabase to display here.</p>
+            }
+          </div>
+        </div>
+
+        <div class="glass-card grow p-5">
+          <p class="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-500">Suggested tip</p>
+          <div class="mt-3 space-y-2 text-sm text-slate-600">
+            @if (tips().length) {
+              <p class="font-semibold text-slate-800">{{ tips()[0].title }}</p>
+              <p class="text-xs text-slate-500">{{ tips()[0].content }}</p>
+            } @else {
+              <p class="text-sm text-slate-500">Add tips in Supabase to personalize coaching and habits.</p>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="flex flex-col gap-6">
+    <div class="glass-card p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-[0.3em] text-sky-500">Streaks</p>
+          <h3 class="mt-2 text-xl font-semibold text-slate-900">Keep the momentum going</h3>
+        </div>
+        <a routerLink="/streaks" class="inline-flex items-center gap-1 text-xs font-semibold text-sky-600">
+          View details
+          <span class="iconify text-sm" data-icon="mdi:arrow-top-right"></span>
+        </a>
+      </div>
+      <div class="mt-4 grid gap-3">
+        @if (streaks().length) {
+          @for (streak of streaks(); track streak.id) {
+            <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-white/80 px-4 py-3 text-sm text-slate-700">
+              <div class="flex items-center gap-3">
+                <span class="iconify text-xl text-amber-500" data-icon="solar:fire-bold"></span>
+                <div>
+                  <p class="font-semibold text-slate-800">{{ streak.streakType | titlecase }} streak</p>
+                  <p class="text-xs text-slate-500">Best: {{ streak.bestStreak }} days</p>
+                </div>
+              </div>
+              <span class="text-lg font-semibold text-sky-600">{{ streak.currentStreak }} days</span>
+            </div>
+          }
+        } @else {
+          <p class="rounded-xl border border-dashed border-slate-200 bg-white/70 px-4 py-6 text-center text-sm text-slate-500">
+            Once users start logging meals, water, and activity we’ll showcase streak progress here.
+          </p>
+        }
+      </div>
+    </div>
+
+    <div class="glass-card p-6">
+      <div class="flex items-center justify-between">
+        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-500">Today’s checklist</p>
+        <a routerLink="/tracking/meals" class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600">
+          Log items
+          <span class="iconify text-sm" data-icon="mdi:arrow-top-right"></span>
+        </a>
+      </div>
+      <div class="mt-4 grid gap-2 text-sm text-slate-600">
+        <label class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white/80 px-4 py-3">
+          <input type="checkbox" class="h-4 w-4 rounded border-slate-300 text-sky-500 focus:ring-sky-400" checked>
+          <span>Log breakfast</span>
+        </label>
+        <label class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white/80 px-4 py-3">
+          <input type="checkbox" class="h-4 w-4 rounded border-slate-300 text-sky-500 focus:ring-sky-400">
+          <span>Drink 2.5L of water</span>
+        </label>
+        <label class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white/80 px-4 py-3">
+          <input type="checkbox" class="h-4 w-4 rounded border-slate-300 text-sky-500 focus:ring-sky-400">
+          <span>Complete cardio workout</span>
+        </label>
+      </div>
+    </div>
+  </section>
+</div>

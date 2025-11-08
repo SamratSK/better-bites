@@ -1,0 +1,31 @@
+<div class="space-y-6">
+  <header class="glass-card p-6">
+    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-sky-500">Streak history</p>
+    <h1 class="mt-2 text-2xl font-semibold text-slate-900">Best streak: {{ longestStreak() }} days</h1>
+    <p class="mt-1 text-sm text-slate-500">Growing streaks unlock new achievements and keep motivation high.</p>
+  </header>
+
+  <section class="grid gap-4 md:grid-cols-2">
+    @if (streaks().length) {
+      @for (streak of streaks(); track streak.id) {
+        <div class="space-y-3 rounded-2xl border border-slate-200 bg-white/85 p-5 shadow-sm">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-semibold text-slate-800">{{ streak.streakType | titlecase }} streak</p>
+              <p class="text-xs text-slate-500">Last completed {{ streak.lastMetDate | date }}</p>
+            </div>
+            <span class="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-600">Current: {{ streak.currentStreak }} days</span>
+          </div>
+          <div class="space-y-2 text-xs text-slate-500">
+            <p>Best streak: <span class="font-semibold text-sky-600">{{ streak.bestStreak }}</span> days</p>
+            <p>Checklist: calories, hydration, activity</p>
+          </div>
+        </div>
+      }
+    } @else {
+      <p class="md:col-span-2 rounded-2xl border border-dashed border-slate-200 bg-white/70 p-10 text-center text-sm text-slate-500">
+        No streak data yet. Once users meet their daily goals we will populate these insights automatically.
+      </p>
+    }
+  </section>
+</div>

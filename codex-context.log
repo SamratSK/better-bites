@@ -1,0 +1,29 @@
+# Codex Context Log
+
+## 2025-11-07 19:50:27Z
+- Login submission previously allowed duplicate requests and surfaced raw exceptions silently.
+- Added a guard to short-circuit when `isSubmitting()` is true and introduced a `catch` branch with a user-facing fallback message in `better-bites-web/src/app/auth/components/login-page/login-page.component.ts`.
+
+## 2025-11-07 19:53:04Z
+- Removed the admin access info card from `better-bites-web/src/app/auth/components/login-page/login-page.component.html` to simplify the login UI as requested.
+
+## 2025-11-07 20:00:35Z
+- Updated `better-bites-web/src/app/auth/components/login-page/login-page.component.ts` to throw Supabase auth errors so they’re handled in the unified `catch`, ensuring the spinner resets and multiple submissions stay blocked even when credentials are invalid.
+
+## 2025-11-07 20:05:51Z
+- Refined login submission flow to call a shared `finishWithError` helper that clears `isSubmitting` before surfacing error messages (including Supabase responses and generic failures) so the loading indicator never remains active after an error.
+
+## 2025-11-07 20:10:24Z
+- Reintroduced a `finally` block in `better-bites-web/src/app/auth/components/login-page/login-page.component.ts` so `isSubmitting` is always reset while `setErrorMessage` handles user feedback, ensuring the spinner state updates even if early returns occur.
+
+## 2025-11-07 20:13:04Z
+- Updated `setErrorMessage` in `better-bites-web/src/app/auth/components/login-page/login-page.component.ts` to immediately clear `isSubmitting` before displaying the message so the spinner disappears as soon as an error is shown.
+
+## 2025-11-07 20:20:00Z
+- Adjusted the login button in `better-bites-web/src/app/auth/components/login-page/login-page.component.html` so the spinner and disabled state only appear when a submission is actively in-flight (no error message present), preventing the loader from lingering after Supabase returns an error.
+
+## 2025-11-07 20:27:25Z
+- Replaced the login page signals with plain class properties and manual change detection (`ChangeDetectorRef`) in `better-bites-web/src/app/auth/components/login-page/login-page.component.ts`, updating the HTML bindings accordingly to resolve the lingering spinner issues without relying on signals.
+
+## 2025-11-07 20:33:12Z
+- Simplified the login submission state to use dedicated `clearError`/`showError` helpers and rely on the `finally` block for resetting `isSubmitting`, while the template’s spinner/disabled logic now depends solely on `isSubmitting`, ensuring the loader appears during requests and disappears afterward without prematurely showing errors.

@@ -1,0 +1,86 @@
+<div class="glass-card space-y-6 p-8">
+  <div class="text-center">
+    <h2 class="text-2xl font-semibold text-slate-900">Welcome back</h2>
+    <p class="mt-2 text-sm text-slate-500">
+      Sign in to review your streaks, goals, and latest wins.
+    </p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-4">
+    <div>
+      <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+        Email
+      </label>
+      <input
+        type="email"
+        formControlName="email"
+        class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 placeholder-slate-400 outline-none transition focus:border-sky-300 focus:ring-2 focus:ring-sky-200"
+        placeholder="you@example.com"
+        autocomplete="email"
+      />
+      @if (form.get('email')?.invalid && form.get('email')?.touched) {
+        <p class="mt-1 text-xs text-red-500">Please enter a valid email address.</p>
+      }
+    </div>
+
+    <div>
+      <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+        Password
+      </label>
+      <input
+        type="password"
+        formControlName="password"
+        class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 placeholder-slate-400 outline-none transition focus:border-sky-300 focus:ring-2 focus:ring-sky-200"
+        placeholder="Your secure password"
+        autocomplete="current-password"
+      />
+      @if (form.get('password')?.invalid && form.get('password')?.touched) {
+        <p class="mt-1 text-xs text-red-500">Password must be at least 6 characters.</p>
+      }
+    </div>
+
+    @if (errorMessage()) {
+      <div class="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
+        {{ errorMessage() }}
+      </div>
+    }
+
+    <button
+      type="submit"
+      class="flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-sky-500 to-emerald-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:from-sky-400 hover:to-emerald-400 disabled:cursor-not-allowed disabled:opacity-60"
+      [disabled]="isSubmitting()"
+    >
+      <!--  -->
+
+      @if (isSubmitting()) {
+        <div>
+          <span
+            [hidden]="!isSubmitting()"
+            class="iconify mr-2 animate-spin text-lg"
+            data-icon="mdi:loading"
+          ></span>
+        </div>
+      }
+
+      Sign in
+    </button>
+  </form>
+
+  <div class="space-y-4 text-xs text-slate-500">
+    <div
+      class="flex flex-col gap-3 rounded-2xl border border-emerald-100 bg-white/70 p-4 text-sm shadow-sm sm:flex-row sm:items-center sm:justify-between"
+    >
+      <div>
+        <p class="font-semibold text-slate-700">New to Better Bites?</p>
+        <p class="text-xs text-slate-500">Join now and your first streak starts today.</p>
+      </div>
+      <a
+        routerLink="/auth/register"
+        class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-sky-400 px-4 py-2 text-xs font-semibold text-white shadow transition hover:from-emerald-300 hover:to-sky-300"
+      >
+        Register
+        <span class="iconify text-base" data-icon="mdi:arrow-right"></span>
+      </a>
+    </div>
+  </div>
+</div>
