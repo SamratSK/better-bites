@@ -57,7 +57,9 @@
     }
 
     @if (successMessage()) {
-      <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-600">
+      <div
+        class="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-600"
+      >
         {{ successMessage() }}
       </div>
     }
@@ -68,19 +70,29 @@
       [disabled]="isSubmitting()"
     >
       @if (isSubmitting()) {
-        <span class="iconify mr-2 animate-spin text-lg" data-icon="mdi:loading"></span>
+        <div>
+          <span class="iconify mr-2 animate-spin text-lg" data-icon="mdi:loading"></span>
+        </div>
       }
       Create account
     </button>
   </form>
 
-  <div class="rounded-2xl border border-slate-200 bg-white/80 p-4 text-xs text-slate-500">
-    <p class="font-semibold text-slate-700">Already have an account?</p>
-    <p class="mt-1 text-xs text-slate-500">
-      <a routerLink="/auth/login" class="inline-flex items-center gap-2 text-sky-600 underline decoration-dotted">
-        Sign in instead
+  <div class="space-y-4 text-xs text-slate-500">
+    <div
+      class="flex flex-col gap-3 rounded-2xl border border-emerald-100 bg-white/70 p-4 text-sm shadow-sm sm:flex-row sm:items-center sm:justify-between"
+    >
+      <div>
+        <p class="font-semibold text-slate-700">Have an account?</p>
+        <p class="text-xs text-slate-500">Login now to start.</p>
+      </div>
+      <a
+        routerLink="/auth/login"
+        class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 to-sky-400 px-4 py-2 text-xs font-semibold text-white shadow transition hover:from-emerald-300 hover:to-sky-300"
+      >
+        Login
         <span class="iconify text-base" data-icon="mdi:arrow-right"></span>
       </a>
-    </p>
+    </div>
   </div>
 </div>

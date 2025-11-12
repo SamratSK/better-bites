@@ -13,13 +13,11 @@ export class AuthService {
 
   private readonly sessionSignal = signal<Session | null>(null);
   private readonly loadingSignal = signal<boolean>(true);
+  private readonly roleSignal = signal<AuthRole>('member');
 
   readonly session = computed(() => this.sessionSignal());
   readonly user: Signal<User | null> = computed(() => this.sessionSignal()?.user ?? null);
-  readonly role: Signal<AuthRole> = computed(() => {
-    const metadataRole = this.user()?.app_metadata?.['role'];
-    return (metadataRole ?? 'member') as AuthRole;
-  });
+  readonly role: Signal<AuthRole> = computed(() => this.roleSignal());
   readonly isAuthenticated = computed(() => Boolean(this.sessionSignal()));
   readonly isAdmin = computed(() => this.role() === 'admin');
   readonly isLoading = computed(() => this.loadingSignal());
@@ -28,6 +26,7 @@ export class AuthService {
     this.restoreSession();
     this.supabase.auth.onAuthStateChange((_event, session) => {
       this.sessionSignal.set(session ?? null);
+       void this.refreshRole();
       this.loadingSignal.set(false);
     });
   }
@@ -36,6 +35,7 @@ export class AuthService {
     const { data, error } = await this.supabase.auth.getSession();
     if (!error) {
       this.sessionSignal.set(data.session ?? null);
+      await this.refreshRole();
     }
     this.loadingSignal.set(false);
   }
@@ -55,9 +55,32 @@ export class AuthService {
   async signOut() {
     await this.supabase.auth.signOut();
     this.sessionSignal.set(null);
+    this.roleSignal.set('member');
   }
 
   getSessionSnapshot(): Session | null {
     return this.sessionSignal();
+  }
+
+  async refreshRole(): Promise<void> {
+    const userId = this.sessionSignal()?.user?.id;
+    if (!userId) {
+      this.roleSignal.set('member');
+      return;
+    }
+
+    const { data, error } = await this.supabase
+      .from('profiles')
+      .select('role')
+      .eq('user_id', userId)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Failed to resolve user role', error.message);
+      this.roleSignal.set('member');
+      return;
+    }
+
+    this.roleSignal.set(((data?.role ?? 'member') as AuthRole));
   }
 }

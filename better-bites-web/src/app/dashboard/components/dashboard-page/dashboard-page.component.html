@@ -60,7 +60,6 @@
         </a>
       </div>
     </div>
-
     <div class="grid gap-6 lg:grid-cols-[1.1fr,0.9fr]">
       <div class="glass-card p-6">
         <div class="flex items-start justify-between">
@@ -143,25 +142,39 @@
 
     <div class="glass-card p-6">
       <div class="flex items-center justify-between">
-        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-500">Today’s checklist</p>
+        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-500">Today’s progress</p>
         <a routerLink="/tracking/meals" class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600">
           Log items
           <span class="iconify text-sm" data-icon="mdi:arrow-top-right"></span>
         </a>
       </div>
-      <div class="mt-4 grid gap-2 text-sm text-slate-600">
-        <label class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white/80 px-4 py-3">
-          <input type="checkbox" class="h-4 w-4 rounded border-slate-300 text-sky-500 focus:ring-sky-400" checked>
-          <span>Log breakfast</span>
-        </label>
-        <label class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white/80 px-4 py-3">
-          <input type="checkbox" class="h-4 w-4 rounded border-slate-300 text-sky-500 focus:ring-sky-400">
-          <span>Drink 2.5L of water</span>
-        </label>
-        <label class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white/80 px-4 py-3">
-          <input type="checkbox" class="h-4 w-4 rounded border-slate-300 text-sky-500 focus:ring-sky-400">
-          <span>Complete cardio workout</span>
-        </label>
+      <div class="mt-4 space-y-3 text-sm text-slate-600">
+        @for (item of checklistItems(); track item.label) {
+          <a
+            [routerLink]="item.routerLink"
+            class="block rounded-xl border px-4 py-3 transition"
+            [class]="item.complete ? 'border-emerald-200 bg-emerald-50/80 text-emerald-700' : 'border-slate-200 bg-white/85 text-slate-600'"
+          >
+            <div class="flex items-center justify-between">
+              <p class="font-semibold">{{ item.label }}</p>
+              @if (item.complete) {
+                <span class="iconify text-lg text-emerald-500" data-icon="mdi:check-circle"></span>
+              } @else {
+                <span class="text-xs font-semibold text-slate-500">{{ item.percent }}%</span>
+              }
+            </div>
+            @if (!item.complete) {
+              <div class="mt-2 h-1.5 rounded-full bg-slate-100">
+                <div class="h-full rounded-full bg-gradient-to-r from-emerald-400 to-sky-400 transition-all" [style.width.%]="item.percent"></div>
+              </div>
+              <p class="mt-1 text-xs text-slate-400">
+                {{ item.current | number:'1.0-0' }} / {{ item.displayTarget !== null ? (item.displayTarget | number:'1.0-0') : '—' }}
+              </p>
+            } @else {
+              <p class="mt-1 text-xs text-emerald-600">Goal met</p>
+            }
+          </a>
+        }
       </div>
     </div>
   </section>

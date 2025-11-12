@@ -37,6 +37,11 @@ export class RegisterPageComponent {
     }
 
     const { email, password, confirmPassword } = this.form.getRawValue();
+    const sanitizedEmail = email.trim().toLowerCase();
+    if (sanitizedEmail !== email) {
+      this.form.patchValue({ email: sanitizedEmail }, { emitEvent: false });
+    }
+
     if (password !== confirmPassword) {
       this.errorMessage.set("Passwords don't match");
       return;
@@ -44,13 +49,14 @@ export class RegisterPageComponent {
 
     this.isSubmitting.set(true);
     try {
-      const { error } = await this.authService.signUpWithPassword(email, password);
+      const { error } = await this.authService.signUpWithPassword(sanitizedEmail, password);
       if (error) {
         this.errorMessage.set(error.message);
         return;
       }
       this.successMessage.set('Check your inbox to confirm your account.');
-      await this.router.navigate(['/auth/login']);
+      this.form.reset({ email: '', password: '', confirmPassword: '' });
+      await this.router.navigate(['/auth/login'], { queryParams: { registered: '1' } });
     } finally {
       this.isSubmitting.set(false);
     }

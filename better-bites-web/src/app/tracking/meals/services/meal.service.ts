@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 
 import { SupabaseClientService } from '../../../core/services/supabase-client.service';
 
@@ -34,8 +34,21 @@ export interface CreateMealPayload {
 })
 export class MealService {
   private readonly supabase = inject(SupabaseClientService).clientInstance;
+  private readonly cache = new Map<string, MealEntry[]>();
+  private readonly changeSignal = signal(0);
 
-  async listByDate(userId: string, logDate: string): Promise<MealEntry[]> {
+  readonly version = () => this.changeSignal();
+
+  private cacheKey(userId: string, logDate: string) {
+    return `${userId}:${logDate}`;
+  }
+
+  async listByDate(userId: string, logDate: string, options: { force?: boolean } = {}): Promise<MealEntry[]> {
+    const key = this.cacheKey(userId, logDate);
+    if (!options.force && this.cache.has(key)) {
+      return this.cache.get(key)!;
+    }
+
     const { data, error } = await this.supabase
       .from('meal_entries')
       .select('*')
@@ -48,7 +61,7 @@ export class MealService {
       return [];
     }
 
-    return (data ?? []).map((row) => ({
+    const mapped = (data ?? []).map((row) => ({
       id: row.id,
       userId: row.user_id,
       logDate: row.log_date,
@@ -61,6 +74,9 @@ export class MealService {
       source: row.source ?? 'manual',
       createdAt: row.created_at,
     }));
+
+    this.cache.set(key, mapped);
+    return mapped;
   }
 
   async create(payload: CreateMealPayload): Promise<MealEntry | null> {
@@ -86,7 +102,7 @@ export class MealService {
       return null;
     }
 
-    return {
+    const entry: MealEntry = {
       id: data.id,
       userId: data.user_id,
       logDate: data.log_date,
@@ -99,5 +115,12 @@ export class MealService {
       source: data.source ?? 'manual',
       createdAt: data.created_at,
     };
+
+    const key = this.cacheKey(payload.userId, payload.logDate);
+    const existing = this.cache.get(key) ?? [];
+    this.cache.set(key, [entry, ...existing]);
+    this.changeSignal.update((value) => value + 1);
+
+    return entry;
   }
 }

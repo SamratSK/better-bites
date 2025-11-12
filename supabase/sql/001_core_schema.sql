@@ -110,11 +110,13 @@ create index if not exists activity_entries_user_date_idx on activity_entries (u
 create table if not exists water_entries (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users on delete cascade,
+  log_date date not null default current_date,
   logged_at timestamptz not null default now(),
   volume_ml integer not null check (volume_ml > 0)
 );
 
 create index if not exists water_entries_user_logged_at_idx on water_entries (user_id, logged_at desc);
+create index if not exists water_entries_user_date_idx on water_entries (user_id, log_date desc);
 
 create table if not exists streaks (
   id uuid primary key default gen_random_uuid(),
@@ -205,7 +207,7 @@ begin
   select coalesce(sum(volume_ml), 0) into water_total
     from water_entries
    where user_id = p_user_id
-     and logged_at::date = p_log_date;
+     and log_date = p_log_date;
 
   insert into daily_logs as dl (
     user_id,
@@ -239,41 +241,61 @@ end;
 $$ language plpgsql security definer;
 
 -- Trigger helpers to maintain daily logs
-create or replace function trg_sync_daily_logs()
+create or replace function trg_sync_daily_logs_by_date()
 returns trigger as $$
 begin
-  perform sync_daily_log(new.user_id, coalesce(new.log_date, new.logged_at::date));
+  perform sync_daily_log(new.user_id, new.log_date);
   return new;
 end;
 $$ language plpgsql security definer;
 
-create or replace function trg_sync_daily_logs_delete()
+create or replace function trg_sync_daily_logs_by_date_delete()
 returns trigger as $$
 begin
-  perform sync_daily_log(old.user_id, coalesce(old.log_date, old.logged_at::date));
+  perform sync_daily_log(old.user_id, old.log_date);
+  return old;
+end;
+$$ language plpgsql security definer;
+
+create or replace function trg_sync_daily_logs_by_logged_at()
+returns trigger as $$
+begin
+  perform sync_daily_log(new.user_id, new.logged_at::date);
+  return new;
+end;
+$$ language plpgsql security definer;
+
+create or replace function trg_sync_daily_logs_by_logged_at_delete()
+returns trigger as $$
+begin
+  perform sync_daily_log(old.user_id, old.logged_at::date);
   return old;
 end;
 $$ language plpgsql security definer;
 
 create trigger meal_entries_sync_daily
-  after insert or update or delete on meal_entries
-  for each row execute procedure trg_sync_daily_logs();
+  after insert or update on meal_entries
+  for each row execute procedure trg_sync_daily_logs_by_date();
 
 create trigger meal_entries_sync_daily_delete
   after delete on meal_entries
-  for each row execute procedure trg_sync_daily_logs_delete();
+  for each row execute procedure trg_sync_daily_logs_by_date_delete();
 
 create trigger activity_entries_sync_daily
   after insert or update on activity_entries
-  for each row execute procedure trg_sync_daily_logs();
+  for each row execute procedure trg_sync_daily_logs_by_date();
 
 create trigger activity_entries_sync_daily_delete
   after delete on activity_entries
-  for each row execute procedure trg_sync_daily_logs_delete();
+  for each row execute procedure trg_sync_daily_logs_by_date_delete();
 
 create trigger water_entries_sync_daily
-  after insert or update or delete on water_entries
-  for each row execute procedure trg_sync_daily_logs();
+  after insert or update on water_entries
+  for each row execute procedure trg_sync_daily_logs_by_date();
+
+create trigger water_entries_sync_daily_delete
+  after delete on water_entries
+  for each row execute procedure trg_sync_daily_logs_by_date_delete();
 
 -- RLS configuration
 alter table profiles enable row level security;

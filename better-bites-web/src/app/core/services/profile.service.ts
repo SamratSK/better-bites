@@ -3,6 +3,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 
 import { ENVIRONMENT } from '../tokens/environment.token';
 import { SupabaseClientService } from './supabase-client.service';
+import type { AuthRole } from './auth.service';
 
 export interface Profile {
   userId: string;
@@ -12,6 +13,7 @@ export interface Profile {
   avatarPreference: 'male' | 'female';
   activityLevel: 'sedentary' | 'light' | 'moderate' | 'active' | 'athlete';
   dateOfBirth?: string | null;
+  role: AuthRole;
 }
 
 export interface DailyGoals {
@@ -39,6 +41,7 @@ export interface ProfileUpsertPayload {
   avatarPreference: Profile['avatarPreference'];
   activityLevel: Profile['activityLevel'];
   dateOfBirth?: string | null;
+  role?: AuthRole;
 }
 
 export interface BodyMeasurementInput {
@@ -86,6 +89,7 @@ export class ProfileService {
         avatarPreference: data.avatar_preference,
         activityLevel: data.activity_level,
         dateOfBirth: data.date_of_birth,
+        role: (data.role ?? 'member') as AuthRole,
       });
     }
   }
@@ -125,6 +129,7 @@ export class ProfileService {
         timezone: payload.timezone,
         avatar_preference: payload.avatarPreference,
         activity_level: payload.activityLevel,
+        role: payload.role ?? this.profileSignal()?.role ?? 'member',
       })
       .select()
       .single();
@@ -142,6 +147,7 @@ export class ProfileService {
       avatarPreference: data.avatar_preference,
       activityLevel: data.activity_level,
       dateOfBirth: data.date_of_birth,
+      role: (data.role ?? 'member') as AuthRole,
     });
   }
 

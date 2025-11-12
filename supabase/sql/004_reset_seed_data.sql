@@ -127,12 +127,12 @@ begin
       (member_id, current_date, 'lunch', 'Grilled chicken wrap with greens', 1, 540, 42, 50, 18, 'manual'),
       (member_id, current_date, 'snack', 'Protein shake (Better Bites)', 1, 210, 30, 12, 4, 'open_food_facts');
 
-    insert into water_entries (user_id, logged_at, volume_ml)
+    insert into water_entries (user_id, log_date, logged_at, volume_ml)
     values
-      (member_id, current_date + time '08:05', 350),
-      (member_id, current_date + time '11:45', 500),
-      (member_id, current_date + time '15:10', 450),
-      (member_id, current_date + time '18:40', 400);
+      (member_id, current_date, current_date + time '08:05', 350),
+      (member_id, current_date, current_date + time '11:45', 500),
+      (member_id, current_date, current_date + time '15:10', 450),
+      (member_id, current_date, current_date + time '18:40', 400);
 
     insert into activity_entries (user_id, log_date, logged_at, activity_type, duration_min, intensity, calories_burned, notes)
     values

@@ -71,16 +71,16 @@ export class ActivityPageComponent {
       intensity: 'moderate',
     });
 
-    await this.refreshActivities();
+    await this.refreshActivities(true);
   }
 
-  async refreshActivities() {
+  async refreshActivities(force = false) {
     const user = this.authService.user();
     if (!user) {
       return;
     }
     this.loading.set(true);
-    const entries = await this.activityService.listByDate(user.id, this.logDate());
+    const entries = await this.activityService.listByDate(user.id, this.logDate(), { force });
     this.activities.set(entries);
     this.loading.set(false);
   }
