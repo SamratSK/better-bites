@@ -6,6 +6,14 @@ import { MainLayoutComponent } from './shared/components/main-layout/main-layout
 
 export const routes: Routes = [
   {
+    path: 'report/share/:token',
+    loadComponent: () =>
+      import('./report/components/public-report-page/public-report-page.component').then(
+        (m) => m.PublicReportPageComponent,
+      ),
+    title: 'Report | Better Bites',
+  },
+  {
     path: 'auth',
     loadChildren: () => import('./auth/auth.routes').then((m) => m.AUTH_ROUTES),
   },
@@ -25,24 +33,34 @@ export const routes: Routes = [
         redirectTo: 'dashboard',
       },
       {
+        path: 'report',
+        loadComponent: () =>
+          import('./report/components/report-page/report-page.component').then((m) => m.ReportPageComponent),
+        title: 'Report | Better Bites',
+        data: { reuse: true },
+      },
+      {
         path: 'dashboard',
         loadComponent: () =>
           import('./dashboard/components/dashboard-page/dashboard-page.component').then(
             (m) => m.DashboardPageComponent,
           ),
         title: 'Dashboard | Better Bites',
+        data: { reuse: true },
       },
       {
         path: 'tracking/meals',
         loadComponent: () =>
           import('./tracking/meals/components/meals-page/meals-page.component').then((m) => m.MealsPageComponent),
         title: 'Meals | Better Bites',
+        data: { reuse: true },
       },
       {
         path: 'tracking/water',
         loadComponent: () =>
           import('./tracking/water/components/water-page/water-page.component').then((m) => m.WaterPageComponent),
         title: 'Hydration | Better Bites',
+        data: { reuse: true },
       },
       {
         path: 'tracking/activity',
@@ -51,12 +69,14 @@ export const routes: Routes = [
             (m) => m.ActivityPageComponent,
           ),
         title: 'Activity | Better Bites',
+        data: { reuse: true },
       },
       {
         path: 'streaks',
         loadComponent: () =>
           import('./streaks/components/streaks-page/streaks-page.component').then((m) => m.StreaksPageComponent),
         title: 'Streaks | Better Bites',
+        data: { reuse: true },
       },
       {
         path: 'insights',
@@ -65,6 +85,7 @@ export const routes: Routes = [
             (m) => m.InsightsPageComponent,
           ),
         title: 'Insights | Better Bites',
+        data: { reuse: true },
       },
       {
         path: 'settings',
@@ -73,6 +94,7 @@ export const routes: Routes = [
             (m) => m.SettingsPageComponent,
           ),
         title: 'Settings | Better Bites',
+        data: { reuse: true },
       },
       {
         path: 'admin',
@@ -82,6 +104,7 @@ export const routes: Routes = [
             (m) => m.AdminDashboardPageComponent,
           ),
         title: 'Admin | Better Bites',
+        data: { reuse: true },
       },
     ],
   },

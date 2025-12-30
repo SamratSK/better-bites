@@ -1,14 +1,8 @@
 export const environment = {
   production: true,
   supabase: {
-    url: 'https://fvpjedrhvthvujgyfpvt.supabase.co',
+    url: 'https://boidqizglkwfwvltcmkc.supabase.co',
     anonKey:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ2cGplZHJodnRodnVqZ3lmcHZ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyNTQ1MjYsImV4cCI6MjA3NzgzMDUyNn0.MDjLM48LGvJf7aYwaqucYyMypJhtn39mo2QvBS0HWAo',
-  },
-  openFoodFactsProxyUrl: 'https://food-cache.example.com',
-  foodCacheServiceKey: '',
-  featureFlags: {
-    barcodeScanner: true,
-    hydrationTracking: true,
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvaWRxaXpnbGt3Znd2bHRjbWtjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcwOTk3NTUsImV4cCI6MjA4MjY3NTc1NX0.CK3VYvfLbobpl5sSD-Sd6CZFVMlIfykH0VswACFAqNk',
   },
 };

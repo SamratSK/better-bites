@@ -60,21 +60,6 @@ create table if not exists daily_logs (
 
 create index if not exists daily_logs_user_date_idx on daily_logs (user_id, log_date desc);
 
-create table if not exists food_references (
-  id uuid primary key default gen_random_uuid(),
-  barcode text,
-  name text not null,
-  brand text,
-  serving_size text,
-  calories numeric(6,1),
-  macros jsonb,
-  micros jsonb,
-  source text not null default 'openfoodfacts',
-  last_synced_at timestamptz,
-  created_at timestamptz not null default now(),
-  constraint food_references_barcode_key unique (barcode)
-);
-
 create table if not exists meal_entries (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users on delete cascade,
@@ -87,7 +72,6 @@ create table if not exists meal_entries (
   carbs_g numeric(6,1) not null default 0,
   fat_g numeric(6,1) not null default 0,
   source text not null default 'manual',
-  food_ref_id uuid references food_references(id),
   created_at timestamptz not null default now()
 );
 
@@ -303,7 +287,6 @@ alter table body_measurements enable row level security;
 alter table daily_goals enable row level security;
 alter table daily_logs enable row level security;
 alter table meal_entries enable row level security;
-alter table food_references enable row level security;
 alter table activity_entries enable row level security;
 alter table water_entries enable row level security;
 alter table streaks enable row level security;
@@ -478,9 +461,7 @@ create policy feedback_update_self on feedback
 create policy feedback_delete_self on feedback
   for delete using (auth.uid() = user_id);
 
--- Allow caching service to read/write food reference data via service key
 grant usage on schema public to service_role;
-grant all on food_references to service_role;
 
 grant select on all tables in schema public to anon;
 
@@ -488,4 +469,6 @@ insert into storage.buckets (id, name, public)
 values ('avatars', 'avatars', true)
 on conflict (id) do update set public = excluded.public;
 
-select storage.set_bucket_public('avatars', true);
+update storage.buckets
+  set public = true
+where id = 'avatars';

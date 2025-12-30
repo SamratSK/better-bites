@@ -64,7 +64,7 @@
       <div class="glass-card p-6">
         <div class="flex items-start justify-between">
           <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.35em] text-sky-500">Your avatar</p>
+            <p class="text-xs font-semibold uppercase tracking-[0.35em] text-sky-500">BMI meter</p>
             <h2 class="mt-2 text-xl font-semibold text-slate-900">{{ bmiCategory() }} BMI</h2>
             <p class="mt-1 text-xs text-slate-500">Based on your latest measurements.</p>
           </div>
@@ -73,8 +73,19 @@
             <p>Height: {{ measurement()?.heightCm ?? '—' }} cm</p>
           </div>
         </div>
-        <div class="mt-4 rounded-3xl border border-sky-100 bg-white/80 p-4 shadow-inner">
-          <app-avatar-canvas [bmi]="bmi()" [gender]="profile()?.avatarPreference ?? 'male'"></app-avatar-canvas>
+        <div class="mt-4 rounded-3xl border border-sky-100 bg-white/80 p-6 shadow-inner">
+          <div class="bmi-meter" [style.--bmi-percent]="bmiPercent()">
+            <div class="bmi-arc"></div>
+            <div class="bmi-needle"></div>
+            <div class="bmi-center"></div>
+            <div class="bmi-value">
+              <span class="bmi-number">{{ bmi() | number:'1.1-1' }}</span>
+              <span class="bmi-label">BMI</span>
+            </div>
+          </div>
+          <p class="mt-4 text-center text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
+            {{ bmiCategory() }}
+          </p>
         </div>
       </div>
 

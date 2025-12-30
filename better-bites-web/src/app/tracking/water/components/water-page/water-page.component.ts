@@ -78,4 +78,16 @@ export class WaterPageComponent {
     await this.addWater(amount);
     this.manualAmount.set(null);
   }
+
+  async deleteWater(entry: WaterEntry) {
+    const user = this.authService.user();
+    if (!user) {
+      return;
+    }
+
+    const deleted = await this.waterService.delete(entry.id, user.id, this.today());
+    if (deleted) {
+      this.hydrationEntries.update((entries) => entries.filter((item) => item.id !== entry.id));
+    }
+  }
 }

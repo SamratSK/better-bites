@@ -83,7 +83,7 @@
             <span class="sr-only">Toggle Navigation</span>
           </button>
           <div>
-            <p class="text-sm font-semibold text-slate-700">Welcome back, {{ user()?.user_metadata?.['display_name'] ?? 'Athlete' }}!</p>
+            <p class="text-sm font-semibold text-slate-700">Welcome back, {{ displayName() }}!</p>
             <p class="text-xs text-slate-500">Let’s make today’s nutrition and movement effortless.</p>
           </div>
         </div>
@@ -92,8 +92,8 @@
             routerLink="/tracking/meals"
             class="hidden items-center gap-2 rounded-xl border border-sky-200 bg-white px-3 py-2 text-sm font-medium text-sky-600 shadow-sm transition hover:bg-sky-100 lg:flex"
           >
-            <span class="iconify text-lg" data-icon="mdi:barcode-scan"></span>
-            Quick log
+            <span class="iconify text-lg" data-icon="mdi:food-apple"></span>
+            Log meal
           </a>
           <a
             routerLink="/tracking/water"

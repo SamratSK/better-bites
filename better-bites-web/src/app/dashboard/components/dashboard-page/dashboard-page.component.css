@@ -5,3 +5,105 @@
 .iconify {
   display: inline-block;
 }
+
+.bmi-meter {
+  --bmi-percent: 50;
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 220px;
+}
+
+.bmi-arc {
+  position: relative;
+  width: 260px;
+  height: 130px;
+  overflow: hidden;
+}
+
+.bmi-arc::before {
+  content: '';
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  background:
+    conic-gradient(
+      from 270deg,
+      #f59e0b 0%,
+      #f59e0b 14%,
+      #22c55e 14%,
+      #22c55e 32%,
+      #f59e0b 32%,
+      #f59e0b 42%,
+      #ef4444 42%,
+      #ef4444 50%,
+      #ef4444 100%
+    );
+  z-index: 1;
+}
+
+.bmi-arc::after {
+  content: '';
+  position: absolute;
+  width: 170px;
+  height: 170px;
+  left: 45px;
+  top: 45px;
+  border-radius: 50%;
+  background: #f8fafc;
+  box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.35);
+  z-index: 2;
+}
+
+.bmi-needle {
+  position: absolute;
+  width: 4px;
+  height: 92px;
+  background: #0f172a;
+  border-radius: 999px;
+  transform-origin: bottom center;
+  left: 50%;
+  top: 36px;
+  transform: translateX(-50%) rotate(calc(-90deg + (var(--bmi-percent) * 1.8deg)));
+  box-shadow: 0 0 0 2px #fff;
+  z-index: 3;
+}
+
+.bmi-center {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: #0f172a;
+  left: 50%;
+  top: 116px;
+  transform: translateX(-50%);
+  box-shadow: 0 0 0 4px #fff;
+  z-index: 4;
+}
+
+.bmi-value {
+  position: absolute;
+  bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: #0f172a;
+  z-index: 3;
+}
+
+.bmi-number {
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.bmi-label {
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: #64748b;
+}

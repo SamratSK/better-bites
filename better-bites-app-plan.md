@@ -25,7 +25,6 @@ Persona Highlights
 
 Top Journeys
 1. Member signs up → completes onboarding (height, weight, gender, activity level, goals) → lands on dashboard.
-2. Member scans a barcode → sees nutrition data pulled from caching service → adds to meal log → daily calories update.
 3. Member completes daily goals (calorie target, water intake, activity) → streak increments → motivational message shown.
 4. Admin reviews flagged food entries → edits or approves entries → updates motivational library.
 5. Member adjusts goals after progress (e.g., change weight target, water goal) → app recalibrates suggestions and avatar.
@@ -38,7 +37,6 @@ Top Journeys
 - Dashboard: Daily overview, streak status, quick actions (log meal, water, workouts), 3D avatar reflecting BMI trend.
 - Meal Tracking:
   - Manual search (local DB curated items, common foods).
-  - Barcode scanning via device camera (OpenFoodFacts cached proxy).
   - Calorie intake tracking vs. daily goal; macros breakdown.
 - Water Tracking: Quick increment UI, daily goal, hydration streak integration.
 - Activity Tracking: Manual entry and integration hooks for future wearable sync (scoped for later).
@@ -49,7 +47,7 @@ Top Journeys
 - Progress & Analytics:
   - Historical data charts (weight, BMI, calories, water).
   - Weekly/monthly summaries with achievements.
-- Admin tools: Manage users (deactivate, reset goals), content (motivation library, tips), view flagged entries, oversee barcode cache backlog.
+- Admin tools: Manage users (deactivate, reset goals), content (motivation library, tips), view flagged entries.
 - Notifications: Daily reminders (push/email) for logging and streak maintenance; configurable quiet hours by user.
 
 
@@ -58,7 +56,6 @@ Top Journeys
 Components
 - **Angular Web App** (front-end SPA; responsive for mobile/desktop).
 - **Supabase Backend** (Postgres DB, Auth, Storage, Realtime, Edge functions if needed).
-- **Python Caching Service** (FastAPI/Fastify alternative) wrapping OpenFoodFacts with persistent storage and caching.
 - In Supabase, make sure ALL RLS rules are proper with no warnnings.
 
 Interaction Flow
@@ -67,8 +64,7 @@ Browser (Angular App)
     ↕ Supabase Auth (sign-up/sign-in, JWT)
     ↕ Supabase PostgREST / RPC (data CRUD)
     ↔ Supabase Storage (avatar assets, admin uploads)
-    ↔ Python Proxy (OpenFoodFacts caching server)
-OpenFoodFacts API (external)
+    ↔ Supabase Storage (avatar assets, admin uploads)
 ```
 
 - Use light theme
@@ -114,7 +110,7 @@ Key Modules/Features
 - **AuthFeature**: Components for login, registration, email verification, forgot password. Supabase JS client integration, guard for route protection.
 - **OnboardingFlow**: Stepper capturing personal metrics, goals, preferences. Persists to `profiles`, `daily_goals`, `body_measurements`.
 - **Dashboard**: Combines streak widget, 3D avatar component, quick logging actions, motivational carousel, daily summary.
-- **MealTracking**: Search/scan entry forms, barcode scanner component (Web APIs on supported browsers), list of logged meals, macros summary. Integrates with caching server via Angular service.
+- **MealTracking**: Manual entry forms, list of logged meals, macros summary.
 - **WaterTracking**: Quick-add buttons, gauge visualization, hydration streak display.
 - **ActivityTracking**: Manual entry forms and timeline; future integration placeholders for wearable sync services.
 - **Streaks Module**: Visualizes current streak, achievements, progress to next milestone.
@@ -157,9 +153,7 @@ Tables (excluding `auth.users`)
 - `daily_logs`  
   - `id`, `user_id`, `log_date`, `calories_consumed`, `protein_g`, `carbs_g`, `fat_g`, `water_ml`, `steps`, `notes`
 - `meal_entries`  
-  - `id`, `user_id`, `log_date`, `meal_type`, `description`, `quantity`, `calories`, `protein_g`, `carbs_g`, `fat_g`, `source` (manual/barcode), `food_ref_id`
-- `food_references`  
-  - `id`, `barcode`, `name`, `brand`, `serving_size`, `calories`, `macros`, `micros`, `source` (openfoodfacts/admin), `last_synced_at`
+  - `id`, `user_id`, `log_date`, `meal_type`, `description`, `quantity`, `calories`, `protein_g`, `carbs_g`, `fat_g`, `source` (manual/admin)
 - `activity_entries`  
   - `id`, `user_id`, `log_date`, `activity_type`, `duration_min`, `calories_burned`, `intensity`, `notes`
 - `streaks`  
@@ -190,23 +184,6 @@ Supabase/PostgREST
   - `calculate_bmi(user_id)` returning latest BMI snapshot.
   - `get_dashboard_summary(user_id, date)` for aggregated data.
   - `list_recommendations(user_id)` combining tips + motivation.
-
-Python Caching Server (FastAPI)
-- Endpoints:
-  - `GET /health`
-  - `GET /foods/{barcode}` – returns cached data or fetches from OpenFoodFacts, normalizes fields, stores result.
-  - `POST /foods/bulk` – admin/backfill ingestion.
-  - `POST /foods/{barcode}/refresh` – force refresh (admin).
-  - `GET /search` – partial search by name/brand (uses local cache).
-- Caching Strategy:
-  - Primary store: SQLite or Postgres (if sharing with Supabase restricted). Each record stores payload, fetched_at, ttl.
-  - In-memory layer: Redis or simple LRU in-process depending on deployment scale. Provide environment-driven toggle.
-  - Data normalization ensures consistent fields (name, brand, macros per serving & per 100g).
-  - Background task revalidation (Celery/APScheduler).
-- Security:
-  - JWT verification (same Supabase tokens) or service API key for admin operations.
-  - Rate limiting per client IP.
-  - Logging with correlation IDs for request tracing.
 
 
 9. Streak & Gamification Logic
@@ -239,7 +216,6 @@ Python Caching Server (FastAPI)
   - Dashboard: highlights flagged entries, content stats, recent sign-ups.
   - User management: search users, view profile summary, adjust roles, deactivate accounts.
   - Content libraries: CRUD on motivational messages, fitness tips.
-  - Barcode cache management: review ingestion logs, refresh stale entries.
 - Audit trail via `admin_events` table.
 - Use Supabase Storage for content assets (image uploads for tips).
 
@@ -247,7 +223,6 @@ Python Caching Server (FastAPI)
 12. Deployment & DevOps
 -----------------------
 - Angular app deployed via static hosting (e.g., Supabase Storage + CDN, Vercel, Netlify).
-- Python caching service containerized (Docker) and deployed on managed service (Railway, Fly.io) or Supabase Functions if using Edge-friendly Python runtime (future).
 - Supabase project handles Postgres + Auth.
 - Environment management:
   - `.env` for Angular (public & private segments).
@@ -283,7 +258,6 @@ Phase 0 – Foundation
 
 Phase 1 – Core Tracking
 - Implement onboarding, dashboard skeleton, meal logging (manual), daily goals, basic streak logic.
-- Integrate caching service for barcode lookups; support manual addition fallback.
 - Render 3D avatar with basic BMI morphing and placeholders.
 
 Phase 2 – Gamification & Insights

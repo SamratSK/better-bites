@@ -1,0 +1,16 @@
+<section class="public-report">
+  <header class="public-report-header">
+    <div>
+      <p class="public-report-kicker">Better Bites Report</p>
+      <h1 class="public-report-title">Summary</h1>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div class="public-report-state">Loading report...</div>
+  } @else if (notFound()) {
+    <div class="public-report-state">This report is not available or sharing is disabled.</div>
+  } @else if (report()) {
+    <app-report-view [report]="report()!"></app-report-view>
+  }
+</section>

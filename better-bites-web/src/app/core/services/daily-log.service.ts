@@ -19,13 +19,8 @@ export interface DailySummary {
 })
 export class DailyLogService {
   private readonly supabase = inject(SupabaseClientService).clientInstance;
-  private readonly summaryCache = new Map<string, DailySummary | null>();
 
-  private cacheKey(userId: string, date: string) {
-    return `${userId}:${date}`;
-  }
-
-  async getSummary(userId: string, date: string, _options: { force?: boolean } = {}): Promise<DailySummary | null> {
+  async getSummary(userId: string, date: string): Promise<DailySummary | null> {
     const { data, error } = await this.supabase
       .from('daily_logs')
       .select('*')

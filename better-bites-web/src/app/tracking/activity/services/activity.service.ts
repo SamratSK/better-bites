@@ -116,4 +116,21 @@ export class ActivityService {
 
     return entry;
   }
+
+  async delete(entryId: string, userId: string, logDate: string): Promise<boolean> {
+    const { error } = await this.supabase.from('activity_entries').delete().eq('id', entryId);
+    if (error) {
+      console.error('Failed to delete activity entry', error.message);
+      return false;
+    }
+
+    const key = this.cacheKey(userId, logDate);
+    const existing = this.cache.get(key) ?? [];
+    this.cache.set(
+      key,
+      existing.filter((entry) => entry.id !== entryId)
+    );
+    this.changeSignal.update((value) => value + 1);
+    return true;
+  }
 }

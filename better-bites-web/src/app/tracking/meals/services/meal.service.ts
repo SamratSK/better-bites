@@ -123,4 +123,21 @@ export class MealService {
 
     return entry;
   }
+
+  async delete(mealId: string, userId: string, logDate: string): Promise<boolean> {
+    const { error } = await this.supabase.from('meal_entries').delete().eq('id', mealId);
+    if (error) {
+      console.error('Failed to delete meal entry', error.message);
+      return false;
+    }
+
+    const key = this.cacheKey(userId, logDate);
+    const existing = this.cache.get(key) ?? [];
+    this.cache.set(
+      key,
+      existing.filter((meal) => meal.id !== mealId)
+    );
+    this.changeSignal.update((value) => value + 1);
+    return true;
+  }
 }

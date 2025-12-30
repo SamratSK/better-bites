@@ -1,0 +1,105 @@
+:host {
+  display: block;
+}
+
+.report-grid {
+  display: grid;
+  gap: 20px;
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.report-card {
+  border-radius: 20px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  background: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.report-label {
+  font-size: 10px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #38bdf8;
+}
+
+.report-title {
+  margin-top: 8px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.report-subtitle {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.report-metrics {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.report-metric-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #94a3b8;
+}
+
+.report-metric-value {
+  margin-top: 6px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.report-muted {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.report-goals {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.report-streaks {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.report-streak {
+  border-radius: 16px;
+  border: 1px solid rgba(226, 232, 240, 0.7);
+  padding: 12px;
+  background: #f8fafc;
+}
+
+.report-logs {
+  background: linear-gradient(135deg, rgba(239, 246, 255, 0.9), rgba(255, 255, 255, 0.95));
+}
+
+.report-log-grid {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.report-log-item {
+  border-radius: 16px;
+  border: 1px solid rgba(226, 232, 240, 0.7);
+  padding: 12px;
+  background: #ffffff;
+}

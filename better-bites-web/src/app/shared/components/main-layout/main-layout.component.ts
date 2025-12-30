@@ -1,6 +1,6 @@
-import { Component, OnInit, effect, computed, inject, signal, OnDestroy } from '@angular/core';
+import { Component, effect, computed, inject, signal, OnDestroy } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { DecimalPipe, TitleCasePipe } from '@angular/common';
+import { TitleCasePipe } from '@angular/common';
 
 import { AuthService } from '../../../core/services/auth.service';
 import { ProfileService } from '../../../core/services/profile.service';
@@ -19,7 +19,7 @@ interface NavLink {
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, TitleCasePipe, DecimalPipe],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, TitleCasePipe],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css',
 })
@@ -35,6 +35,7 @@ export class MainLayoutComponent implements OnDestroy {
   readonly user = this.authService.user;
   readonly isAdmin = this.authService.isAdmin;
   readonly goals = this.profileService.dailyGoals;
+  readonly profile = this.profileService.profile;
   readonly today = signal(new Date().toISOString().slice(0, 10));
   readonly todaySummary = signal<DailySummary | null>(null);
   readonly pulseLoading = signal(true);
@@ -46,6 +47,7 @@ export class MainLayoutComponent implements OnDestroy {
     { label: 'Water', icon: 'mdi:cup-water', routerLink: ['/tracking', 'water'] },
     { label: 'Activity', icon: 'lucide:dumbbell', routerLink: ['/tracking', 'activity'] },
     { label: 'Streaks', icon: 'solar:fire-bold', routerLink: ['/streaks'] },
+    { label: 'Report', icon: 'mdi:file-chart-outline', routerLink: ['/report'] },
     { label: 'Insights', icon: 'mdi:chart-line', routerLink: ['/insights'] },
     { label: 'Settings', icon: 'mdi:cog', routerLink: ['/settings'] },
   ];
@@ -56,8 +58,12 @@ export class MainLayoutComponent implements OnDestroy {
     routerLink: ['/admin'],
   };
 
+  readonly displayName = computed(() => {
+    return this.profile()?.displayName ?? this.user()?.user_metadata?.['display_name'] ?? this.user()?.email ?? 'Athlete';
+  });
+
   readonly initials = computed(() => {
-    const displayName = this.user()?.user_metadata?.['display_name'] ?? this.user()?.email ?? '';
+    const displayName = this.displayName();
     return displayName
       .split(' ')
       .slice(0, 2)
@@ -98,9 +104,8 @@ export class MainLayoutComponent implements OnDestroy {
       };
     }
 
-    const totalCurrent = stats.reduce((sum, entry) => sum + entry.current, 0);
-    const totalTarget = stats.reduce((sum, entry) => sum + entry.target, 0);
-    const percent = totalTarget > 0 ? Math.min(Math.round((totalCurrent / totalTarget) * 100), 100) : 0;
+    const normalizedRatios = stats.map((entry) => Math.min(entry.current / entry.target, 1));
+    const percent = Math.round((normalizedRatios.reduce((sum, ratio) => sum + ratio, 0) / normalizedRatios.length) * 100);
 
     const weakest = stats.reduce((prev, curr) =>
       curr.current / curr.target < prev.current / prev.target ? curr : prev
@@ -122,6 +127,9 @@ export class MainLayoutComponent implements OnDestroy {
     const user = this.authService.user();
     if (!user) {
       return;
+    }
+    if (!this.profileService.profile()) {
+      void this.profileService.loadProfile(user.id);
     }
     const goalsSnapshot = this.profileService.dailyGoals();
     if (!goalsSnapshot) {

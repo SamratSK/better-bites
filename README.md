@@ -4,7 +4,6 @@ This workspace houses the end-to-end implementation for the Better Bites food tr
 
 - **better-bites-web/** – Angular front-end with standalone feature areas, Tailwind styling, Supabase integration, and a 3D avatar canvas.
 - **supabase/sql/** – SQL migrations defining the primary schema, triggers, and row-level security policies for Supabase (Cosmos organization).
-- **services/food-cache/** – FastAPI service that caches OpenFoodFacts lookups and exposes a secure API for barcode scanning workflows.
 
 ## Prerequisites
 
@@ -20,13 +19,11 @@ npm install
 npm start
 ```
 
-Configure Supabase and the caching proxy by setting the following variables (e.g. in `better-bites-web/.env.local`, which stays out of Git):
+Configure Supabase by setting the following variables (e.g. in `better-bites-web/.env.local`, which stays out of Git):
 
 ```
 NG_APP_SUPABASE_URL=https://<project-ref>.supabase.co
 NG_APP_SUPABASE_ANON_KEY=<anon-key>
-NG_APP_OPENFOODFACTS_PROXY=http://localhost:5100
-NG_APP_FOOD_CACHE_SERVICE_KEY=<optional-service-key-for-admin-endpoints>
 ```
 
 When you create or link a Supabase project, ensure it lives under the **Cosmos** organization per team policy.
@@ -74,31 +71,11 @@ The scripts create tables for profiles, logs, streaks, motivational content, cac
 
 After running the reset, point the Angular app to the refreshed project via `.env.local` (or edit `src/environments/environment*.ts`) so Supabase tokens resolve to the Cosmos instance.
 
-## Food cache service
-
-```bash
-cd services/food-cache
-python -m venv .venv
-source .venv/bin/activate
-pip install -e .
-cp .env.example .env
-uvicorn app.main:app --reload --port 5100
-```
-
-The FastAPI app provides:
-
-- `GET /foods/{barcode}` – returns cached results and refreshes stale entries.
-- `GET /search?q=term` – lightweight search over cached items.
-- `POST /foods/{barcode}/refresh` – forces a refresh (requires `X-Service-Key`).
-- `POST /foods/bulk` – ingest curated payloads (requires `X-Service-Key`).
-
-By default the service writes to SQLite (`food_cache.db`). Swap `CACHE_DATABASE_URL` for Postgres when deploying to production.
-
 ## Next steps
 
 1. **Wire Supabase project** – create (or reuse) a project under the Cosmos organization, run the base migration, and configure JWT custom claims to surface `role` to the client.
 2. **Connect Angular app** – set `supabaseUrl`, `supabaseAnonKey`, and `openFoodFactsProxyUrl` in the environment files. Implement proper form submissions that call Supabase functions.
-3. **Implement backend automation** – add Supabase Edge Functions for streak updates and nightly cron jobs, plus webhook integrations between the caching service and Supabase `food_references`.
+3. **Implement backend automation** – add Supabase Edge Functions for streak updates and nightly cron jobs.
 4. **Testing** – add Angular unit/E2E coverage and FastAPI tests (pytest + httpx.AsyncClient) before production rollout.
 5. **Deployment** – choose hosting (Vercel/Netlify for web, Fly.io/Railway for FastAPI) and wire CI/CD pipelines.
 

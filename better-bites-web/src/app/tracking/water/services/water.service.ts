@@ -86,6 +86,23 @@ export class WaterService {
     return entry;
   }
 
+  async delete(entryId: string, userId: string, logDate: string): Promise<boolean> {
+    const { error } = await this.supabase.from('water_entries').delete().eq('id', entryId);
+    if (error) {
+      console.error('Failed to delete water entry', error.message);
+      return false;
+    }
+
+    const key = this.cacheKey(userId, logDate);
+    const existing = this.cache.get(key) ?? [];
+    this.cache.set(
+      key,
+      existing.filter((entry) => entry.id !== entryId)
+    );
+    this.changeSignal.update((value) => value + 1);
+    return true;
+  }
+
   // Water entries only persist timestamps, so we derive daily windows/timestamps in UTC.
   private createDayBounds(date: string) {
     const start = this.safeParseDate(date);

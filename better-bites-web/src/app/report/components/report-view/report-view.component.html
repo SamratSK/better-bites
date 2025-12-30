@@ -1,0 +1,112 @@
+<div class="report-grid">
+  <section class="report-card">
+    <div>
+      <p class="report-label">Athlete</p>
+      <h2 class="report-title">{{ report.profile?.displayName ?? 'Athlete' }}</h2>
+      <p class="report-subtitle">
+        {{ report.profile?.activityLevel ?? 'moderate' | titlecase }} ·
+        {{ report.profile?.timezone ?? 'UTC' }}
+      </p>
+    </div>
+    <div class="report-metrics">
+      <div>
+        <p class="report-metric-label">BMI</p>
+        <p class="report-metric-value">
+          @if (bmiValue !== null) {
+            {{ bmiValue | number:'1.1-1' }}
+          } @else {
+            —
+          }
+        </p>
+      </div>
+      <div>
+        <p class="report-metric-label">Weight</p>
+        <p class="report-metric-value">
+          {{ report.measurement?.weightKg ?? '—' }} kg
+        </p>
+      </div>
+      <div>
+        <p class="report-metric-label">Height</p>
+        <p class="report-metric-value">
+          {{ report.measurement?.heightCm ?? '—' }} cm
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="report-card">
+    <p class="report-label">Daily Goals</p>
+    <div class="report-goals">
+      <div>
+        <p class="report-metric-label">Calories</p>
+        <p class="report-metric-value">{{ report.goals?.caloriesTarget ?? '—' }}</p>
+      </div>
+      <div>
+        <p class="report-metric-label">Protein</p>
+        <p class="report-metric-value">{{ report.goals?.proteinTarget ?? '—' }}</p>
+      </div>
+      <div>
+        <p class="report-metric-label">Carbs</p>
+        <p class="report-metric-value">{{ report.goals?.carbsTarget ?? '—' }}</p>
+      </div>
+      <div>
+        <p class="report-metric-label">Fat</p>
+        <p class="report-metric-value">{{ report.goals?.fatTarget ?? '—' }}</p>
+      </div>
+      <div>
+        <p class="report-metric-label">Water</p>
+        <p class="report-metric-value">
+          @if (report.goals?.waterMlTarget !== null && report.goals?.waterMlTarget !== undefined) {
+            {{ (report.goals?.waterMlTarget ?? 0) / 1000 | number:'1.1-1' }} L
+          } @else {
+            —
+          }
+        </p>
+      </div>
+      <div>
+        <p class="report-metric-label">Steps</p>
+        <p class="report-metric-value">{{ report.goals?.stepsTarget ?? '—' }}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="report-card">
+    <p class="report-label">Streaks</p>
+    <div class="report-streaks">
+      @if (report.streaks.length) {
+        @for (streak of report.streaks; track streak.streakType) {
+          <div class="report-streak">
+            <p class="report-metric-label">{{ streak.streakType | titlecase }}</p>
+            <p class="report-metric-value">{{ streak.currentStreak }} days</p>
+            <p class="report-muted">Best: {{ streak.bestStreak }} days</p>
+          </div>
+        }
+      } @else {
+        <p class="report-muted">No streak data available yet.</p>
+      }
+    </div>
+  </section>
+
+  <section class="report-card report-logs">
+    <p class="report-label">Last 7 Days</p>
+    @if (report.recentLogs.length) {
+      <div class="report-log-grid">
+        @for (log of report.recentLogs; track log.logDate) {
+          <div class="report-log-item">
+            <p class="report-metric-label">{{ log.logDate | date:'MMM d' }}</p>
+            <p class="report-metric-value">{{ log.caloriesConsumed | number:'1.0-0' }} kcal</p>
+            <p class="report-muted">
+              {{ log.proteinG | number:'1.0-0' }}P · {{ log.carbsG | number:'1.0-0' }}C ·
+              {{ log.fatG | number:'1.0-0' }}F
+            </p>
+            <p class="report-muted">
+              {{ (log.waterMl / 1000) | number:'1.1-1' }}L · {{ log.steps | number:'1.0-0' }} steps
+            </p>
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="report-muted">No daily logs found for the last week.</p>
+    }
+  </section>
+</div>

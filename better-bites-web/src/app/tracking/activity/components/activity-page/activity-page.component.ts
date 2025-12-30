@@ -84,4 +84,15 @@ export class ActivityPageComponent {
     this.activities.set(entries);
     this.loading.set(false);
   }
+
+  async deleteActivity(entry: ActivityEntry) {
+    const user = this.authService.user();
+    if (!user) {
+      return;
+    }
+    const deleted = await this.activityService.delete(entry.id, user.id, entry.logDate);
+    if (deleted) {
+      await this.refreshActivities(true);
+    }
+  }
 }

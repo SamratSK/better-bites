@@ -1,6 +1,6 @@
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
-import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import type { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
@@ -9,7 +9,6 @@ import { MotivationService } from '../../../core/services/motivation.service';
 import { ProfileService } from '../../../core/services/profile.service';
 import { StreakService } from '../../../core/services/streak.service';
 import { DailyLogService, DailySummary } from '../../../core/services/daily-log.service';
-import { AvatarCanvasComponent } from '../../../shared/components/avatar-canvas/avatar-canvas.component';
 
 interface ChecklistItem {
   label: string;
@@ -24,7 +23,7 @@ interface ChecklistItem {
 @Component({
   selector: 'app-dashboard-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, AvatarCanvasComponent, TitleCasePipe],
+  imports: [CommonModule, RouterLink, TitleCasePipe],
   templateUrl: './dashboard-page.component.html',
   styleUrls: ['./dashboard-page.component.css'],
 })
@@ -49,12 +48,45 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   readonly summaryLoading = signal(true);
 
   readonly bmi = computed(() => this.measurement()?.bmi ?? 22);
+  readonly bmiPercent = computed(() => {
+    const bmi = this.bmi();
+    const min = 15;
+    const under = 18.5;
+    const healthy = 25;
+    const over = 30;
+    const obese1 = 35;
+    const obese2 = 40;
+    const max = 45;
+
+    const clamp = (value: number, low: number, high: number) => Math.max(low, Math.min(high, value));
+    const lerp = (value: number, start: number, end: number, outputStart: number, outputEnd: number) =>
+      outputStart + ((value - start) / (end - start)) * (outputEnd - outputStart);
+
+    if (bmi <= under) {
+      return lerp(clamp(bmi, min, under), min, under, 0, 18);
+    }
+    if (bmi <= healthy) {
+      return lerp(bmi, under, healthy, 18, 50);
+    }
+    if (bmi <= over) {
+      return lerp(bmi, healthy, over, 50, 68);
+    }
+    if (bmi <= obese1) {
+      return lerp(bmi, over, obese1, 68, 82);
+    }
+    if (bmi <= obese2) {
+      return lerp(bmi, obese1, obese2, 82, 92);
+    }
+    return lerp(clamp(bmi, obese2, max), obese2, max, 92, 100);
+  });
   readonly bmiCategory = computed(() => {
     const bmi = this.bmi();
     if (bmi < 18.5) return 'Underweight';
-    if (bmi < 25) return 'Healthy';
+    if (bmi < 25) return 'Normal';
     if (bmi < 30) return 'Overweight';
-    return 'Obese';
+    if (bmi < 35) return 'Obesity Class I';
+    if (bmi < 40) return 'Obesity Class II';
+    return 'Obesity Class III';
   });
   readonly caloriesConsumed = computed(() => this.todaySummary()?.caloriesConsumed ?? 0);
   readonly calorieTarget = computed(() => this.goals()?.caloriesTarget ?? null);
@@ -105,9 +137,9 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     void this.loadDailySummary(userId);
   }
 
-  private async loadDailySummary(userId: string, options: { force?: boolean } = {}) {
+  private async loadDailySummary(userId: string) {
     this.summaryLoading.set(true);
-    const summary = await this.dailyLogService.getSummary(userId, this.today(), options);
+    const summary = await this.dailyLogService.getSummary(userId, this.today());
     this.todaySummary.set(summary);
     this.summaryLoading.set(false);
   }

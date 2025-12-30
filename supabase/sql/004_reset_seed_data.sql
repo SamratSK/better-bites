@@ -16,7 +16,6 @@ truncate table
   flagged_items,
   admin_events,
   feedback,
-  food_references,
   motivational_messages,
   fitness_tips,
   profiles
@@ -37,38 +36,6 @@ values
   ('Evening wind-down', 'Dim lights 30 minutes before bed and log tomorrow’s plan to improve sleep quality.', 'mindset', array['sleep','planning'], true),
   ('Weekend prep', 'Batch-cook grains and chop produce on Sunday to simplify weekday lunches.', 'diet', array['meal prep','consistency'], true)
 on conflict do nothing;
-
-insert into food_references (barcode, name, brand, serving_size, calories, macros, source, last_synced_at)
-values
-  (
-    '0001112223333',
-    'Better Bites Protein Shake',
-    'Better Bites Labs',
-    '330 ml bottle',
-    210,
-    jsonb_build_object('protein', 30, 'carbs', 12, 'fat', 4),
-    'manual_seed',
-    now()
-  ),
-  (
-    '0099887766554',
-    'Hydra+ Electrolyte Drink',
-    'Hydra Co',
-    '500 ml bottle',
-    35,
-    jsonb_build_object('protein', 0, 'carbs', 9, 'fat', 0),
-    'manual_seed',
-    now()
-  )
-on conflict (barcode)
-do update set
-  name = excluded.name,
-  brand = excluded.brand,
-  serving_size = excluded.serving_size,
-  calories = excluded.calories,
-  macros = excluded.macros,
-  source = excluded.source,
-  last_synced_at = excluded.last_synced_at;
 
 do $$
 declare
@@ -125,7 +92,7 @@ begin
     values
       (member_id, current_date, 'breakfast', 'Greek yogurt parfait with berries', 1, 320, 24, 38, 8, 'manual'),
       (member_id, current_date, 'lunch', 'Grilled chicken wrap with greens', 1, 540, 42, 50, 18, 'manual'),
-      (member_id, current_date, 'snack', 'Protein shake (Better Bites)', 1, 210, 30, 12, 4, 'open_food_facts');
+      (member_id, current_date, 'snack', 'Protein shake (Better Bites)', 1, 210, 30, 12, 4, 'manual');
 
     insert into water_entries (user_id, log_date, logged_at, volume_ml)
     values
@@ -195,7 +162,7 @@ begin
         member_id,
         'meal_entry',
         null,
-        'Calories unusually high for barcode lookup',
+        'Calories unusually high for manual entry',
         'pending',
         null,
         null,
