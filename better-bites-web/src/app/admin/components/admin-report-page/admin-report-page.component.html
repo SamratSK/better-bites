@@ -1,0 +1,18 @@
+<section class="admin-report-shell">
+  <header class="admin-report-header">
+    <div>
+      <p class="admin-report-kicker">Admin report</p>
+      <h1 class="admin-report-title">Member report</h1>
+      <p class="admin-report-subtitle">Review a member’s latest goals, metrics, and logs.</p>
+    </div>
+    <a routerLink="/admin" class="admin-report-back">Back to admin</a>
+  </header>
+
+  @if (loading()) {
+    <div class="admin-report-state">Loading report...</div>
+  } @else if (report()) {
+    <app-report-view [report]="report()!"></app-report-view>
+  } @else {
+    <div class="admin-report-state">Unable to load this report.</div>
+  }
+</section>

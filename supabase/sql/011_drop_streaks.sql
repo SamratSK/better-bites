@@ -1,27 +1,6 @@
 set search_path to public;
 
-create table if not exists report_shares (
-  user_id uuid primary key references auth.users on delete cascade,
-  share_enabled boolean not null default false,
-  share_token uuid not null default gen_random_uuid(),
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
-);
-
-alter table report_shares enable row level security;
-
-create policy report_shares_select_self on report_shares
-  for select using (auth.uid() = user_id);
-
-create policy report_shares_insert_self on report_shares
-  for insert with check (auth.uid() = user_id);
-
-create policy report_shares_update_self on report_shares
-  for update using (auth.uid() = user_id)
-  with check (auth.uid() = user_id);
-
-create policy report_shares_delete_self on report_shares
-  for delete using (auth.uid() = user_id);
+drop table if exists streaks;
 
 create or replace function get_public_report(p_token uuid)
 returns jsonb
@@ -96,6 +75,3 @@ begin
   );
 end;
 $$;
-
-grant execute on function get_public_report(uuid) to anon;
-grant execute on function get_public_report(uuid) to authenticated;

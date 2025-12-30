@@ -72,13 +72,6 @@ export const routes: Routes = [
         data: { reuse: true },
       },
       {
-        path: 'streaks',
-        loadComponent: () =>
-          import('./streaks/components/streaks-page/streaks-page.component').then((m) => m.StreaksPageComponent),
-        title: 'Streaks | Better Bites',
-        data: { reuse: true },
-      },
-      {
         path: 'insights',
         loadComponent: () =>
           import('./insights/components/insights-page/insights-page.component').then(
@@ -104,6 +97,16 @@ export const routes: Routes = [
             (m) => m.AdminDashboardPageComponent,
           ),
         title: 'Admin | Better Bites',
+        data: { reuse: true },
+      },
+      {
+        path: 'admin/report/:userId',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./admin/components/admin-report-page/admin-report-page.component').then(
+            (m) => m.AdminReportPageComponent,
+          ),
+        title: 'Admin Report | Better Bites',
         data: { reuse: true },
       },
     ],

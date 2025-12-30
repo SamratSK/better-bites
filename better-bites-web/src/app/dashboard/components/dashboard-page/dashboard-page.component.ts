@@ -7,7 +7,6 @@ import { filter } from 'rxjs/operators';
 import { AuthService } from '../../../core/services/auth.service';
 import { MotivationService } from '../../../core/services/motivation.service';
 import { ProfileService } from '../../../core/services/profile.service';
-import { StreakService } from '../../../core/services/streak.service';
 import { DailyLogService, DailySummary } from '../../../core/services/daily-log.service';
 
 interface ChecklistItem {
@@ -31,7 +30,6 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly profileService = inject(ProfileService);
   private readonly motivationService = inject(MotivationService);
-  private readonly streakService = inject(StreakService);
   private readonly dailyLogService = inject(DailyLogService);
   private readonly router = inject(Router);
   private routeSub: Subscription | null = null;
@@ -40,7 +38,6 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   readonly profile = this.profileService.profile;
   readonly goals = this.profileService.dailyGoals;
   readonly measurement = this.profileService.latestMeasurement;
-  readonly streaks = this.streakService.streaks;
   readonly messages = this.motivationService.messages;
   readonly tips = this.motivationService.tips;
   readonly today = signal(new Date().toISOString().slice(0, 10));
@@ -130,7 +127,6 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
       void this.profileService.loadProfile(userId);
       void this.profileService.loadDailyGoals(userId);
       void this.profileService.loadLatestMeasurement(userId);
-      void this.streakService.refresh(userId);
       void this.motivationService.loadActiveContent();
       this.dataLoadedFor.add(userId);
     }

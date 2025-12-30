@@ -46,7 +46,6 @@ export class MainLayoutComponent implements OnDestroy {
     { label: 'Meals', icon: 'mdi:food', routerLink: ['/tracking', 'meals'] },
     { label: 'Water', icon: 'mdi:cup-water', routerLink: ['/tracking', 'water'] },
     { label: 'Activity', icon: 'lucide:dumbbell', routerLink: ['/tracking', 'activity'] },
-    { label: 'Streaks', icon: 'solar:fire-bold', routerLink: ['/streaks'] },
     { label: 'Report', icon: 'mdi:file-chart-outline', routerLink: ['/report'] },
     { label: 'Insights', icon: 'mdi:chart-line', routerLink: ['/insights'] },
     { label: 'Settings', icon: 'mdi:cog', routerLink: ['/settings'] },
@@ -113,7 +112,7 @@ export class MainLayoutComponent implements OnDestroy {
 
     let message = '';
     if (percent >= 90) {
-      message = 'Everything is on track. Keep the streak shining.';
+      message = 'Everything is on track. Keep the momentum shining.';
     } else if (percent >= 60) {
       message = `Add a little more ${weakest.label} to finish strong.`;
     } else {

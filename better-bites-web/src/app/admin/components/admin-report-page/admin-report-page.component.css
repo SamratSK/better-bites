@@ -1,0 +1,59 @@
+.admin-report-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.admin-report-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.admin-report-kicker {
+  font-size: 11px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: #38bdf8;
+  font-weight: 600;
+}
+
+.admin-report-title {
+  margin-top: 6px;
+  font-size: 26px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.admin-report-subtitle {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.admin-report-back {
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: #ffffff;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f172a;
+  transition: 0.2s ease;
+}
+
+.admin-report-back:hover {
+  border-color: #38bdf8;
+  color: #0ea5e9;
+}
+
+.admin-report-state {
+  border-radius: 16px;
+  border: 1px dashed rgba(148, 163, 184, 0.4);
+  padding: 24px;
+  text-align: center;
+  font-size: 14px;
+  color: #64748b;
+}

@@ -10,10 +10,10 @@ export class SupabaseClientService {
   private readonly env = inject(ENVIRONMENT);
   private readonly client = createClient(this.env.supabase.url, this.env.supabase.anonKey, {
     auth: {
-      autoRefreshToken: false,
+      autoRefreshToken: true,
       persistSession: true,
       detectSessionInUrl: true,
-      storage: typeof window !== 'undefined' ? window.sessionStorage : undefined,
+      storage: typeof window !== 'undefined' ? window.localStorage : undefined,
     },
   });
 

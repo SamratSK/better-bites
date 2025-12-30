@@ -3,7 +3,6 @@ import { Injectable, computed, inject } from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
 import { DailyLogService } from '../../core/services/daily-log.service';
 import { ProfileService } from '../../core/services/profile.service';
-import { StreakService } from '../../core/services/streak.service';
 import { SupabaseClientService } from '../../core/services/supabase-client.service';
 
 export interface ReportProfile {
@@ -31,13 +30,6 @@ export interface ReportMeasurement {
   waistCm?: number | null;
 }
 
-export interface ReportStreak {
-  streakType: string;
-  currentStreak: number;
-  bestStreak: number;
-  lastMetDate: string | null;
-}
-
 export interface ReportLog {
   logDate: string;
   caloriesConsumed: number;
@@ -52,7 +44,6 @@ export interface ReportData {
   profile: ReportProfile | null;
   goals: ReportGoals | null;
   measurement: ReportMeasurement | null;
-  streaks: ReportStreak[];
   recentLogs: ReportLog[];
 }
 
@@ -84,12 +75,6 @@ interface PublicReportPayload {
     body_fat_pct?: number | null;
     waist_cm?: number | null;
   } | null;
-  streaks?: Array<{
-    streak_type?: string | null;
-    current_streak?: number | null;
-    best_streak?: number | null;
-    last_met_date?: string | null;
-  }>;
   recent_logs?: Array<{
     log_date?: string | null;
     calories_consumed?: number | null;
@@ -107,7 +92,6 @@ interface PublicReportPayload {
 export class ReportService {
   private readonly authService = inject(AuthService);
   private readonly profileService = inject(ProfileService);
-  private readonly streakService = inject(StreakService);
   private readonly dailyLogService = inject(DailyLogService);
   private readonly supabase = inject(SupabaseClientService).clientInstance;
 
@@ -123,7 +107,6 @@ export class ReportService {
       this.profileService.loadProfile(user.id),
       this.profileService.loadDailyGoals(user.id),
       this.profileService.loadLatestMeasurement(user.id),
-      this.streakService.refresh(user.id),
     ]);
 
     const endDate = new Date();
@@ -137,8 +120,6 @@ export class ReportService {
     const profile = this.profileService.profile();
     const goals = this.profileService.dailyGoals();
     const measurement = this.profileService.latestMeasurement();
-    const streaks = this.streakService.streaks();
-
     return {
       profile: profile
         ? {
@@ -166,12 +147,6 @@ export class ReportService {
             bodyFatPct: measurement.bodyFatPct ?? null,
           }
         : null,
-      streaks: (streaks ?? []).map((streak) => ({
-        streakType: streak.streakType,
-        currentStreak: streak.currentStreak,
-        bestStreak: streak.bestStreak,
-        lastMetDate: streak.lastMetDate ?? null,
-      })),
       recentLogs: recentLogs.map((log) => ({
         logDate: log.logDate,
         caloriesConsumed: log.caloriesConsumed,
@@ -233,12 +208,11 @@ export class ReportService {
     return this.mapReportPayload(data);
   }
 
-  private mapReportPayload(payload: unknown): ReportData {
+  mapReportPayload(payload: unknown): ReportData {
     const source = (payload ?? {}) as PublicReportPayload;
     const profile = source.profile ?? null;
     const goals = source.daily_goals ?? null;
     const measurement = source.latest_measurement ?? null;
-    const streaks = source.streaks ?? [];
     const recentLogs = source.recent_logs ?? [];
 
     return {
@@ -270,12 +244,6 @@ export class ReportService {
             waistCm: measurement.waist_cm ?? null,
           }
         : null,
-      streaks: streaks.map((streak) => ({
-        streakType: streak.streak_type ?? 'overall',
-        currentStreak: streak.current_streak ?? 0,
-        bestStreak: streak.best_streak ?? 0,
-        lastMetDate: streak.last_met_date ?? null,
-      })),
       recentLogs: recentLogs.map((log) => ({
         logDate: log.log_date ?? '',
         caloriesConsumed: Number(log.calories_consumed ?? 0),

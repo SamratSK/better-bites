@@ -70,23 +70,6 @@
     </div>
   </section>
 
-  <section class="report-card">
-    <p class="report-label">Streaks</p>
-    <div class="report-streaks">
-      @if (report.streaks.length) {
-        @for (streak of report.streaks; track streak.streakType) {
-          <div class="report-streak">
-            <p class="report-metric-label">{{ streak.streakType | titlecase }}</p>
-            <p class="report-metric-value">{{ streak.currentStreak }} days</p>
-            <p class="report-muted">Best: {{ streak.bestStreak }} days</p>
-          </div>
-        }
-      } @else {
-        <p class="report-muted">No streak data available yet.</p>
-      }
-    </div>
-  </section>
-
   <section class="report-card report-logs">
     <p class="report-label">Last 7 Days</p>
     @if (report.recentLogs.length) {

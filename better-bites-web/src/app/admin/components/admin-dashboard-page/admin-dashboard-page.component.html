@@ -1,66 +1,129 @@
 <div class="space-y-6">
-  <header class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
-    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-primary-200">Admin console</p>
-    <h1 class="mt-2 text-2xl font-semibold text-slate-100">Operational overview</h1>
-    <p class="mt-1 text-sm text-slate-400">Manage content, monitor flagged entries, and support members.</p>
+  <header class="glass-card p-6">
+    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-sky-500">Admin console</p>
+    <h1 class="mt-2 text-2xl font-semibold text-slate-900">Operational overview</h1>
+    <p class="mt-1 text-sm text-slate-500">Manage content, monitor flagged entries, and support members.</p>
   </header>
 
-  <section class="grid gap-4 md:grid-cols-3">
-    <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 text-sm text-slate-200">
-      <p class="text-xs uppercase tracking-widest text-slate-500">Users</p>
-      <p class="mt-2 text-3xl font-semibold text-primary-100">
+  <section class="grid gap-4 md:grid-cols-4">
+    <div class="glass-card p-5 text-sm text-slate-700">
+      <p class="text-xs uppercase tracking-widest text-slate-400">Total users</p>
+      <p class="mt-2 text-3xl font-semibold text-slate-900">
         @if (loading()) {
-          <span class="inline-flex h-6 w-12 animate-pulse rounded-full bg-slate-700"></span>
+          <span class="inline-flex h-6 w-12 animate-pulse rounded-full bg-slate-200"></span>
+        } @else {
+          {{ summary()?.totalUsers ?? 0 | number:'1.0-0' }}
+        }
+      </p>
+      <p class="text-xs text-slate-500">Profiles in system</p>
+    </div>
+    <div class="glass-card p-5 text-sm text-slate-700">
+      <p class="text-xs uppercase tracking-widest text-slate-400">Members</p>
+      <p class="mt-2 text-3xl font-semibold text-slate-900">
+        @if (loading()) {
+          <span class="inline-flex h-6 w-12 animate-pulse rounded-full bg-slate-200"></span>
         } @else {
           {{ summary()?.memberCount ?? 0 | number:'1.0-0' }}
         }
       </p>
-      <p class="text-xs text-slate-400">Active profiles</p>
+      <p class="text-xs text-slate-500">Standard access</p>
     </div>
-    <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 text-sm text-slate-200">
-      <p class="text-xs uppercase tracking-widest text-slate-500">Motivational messages</p>
-      <p class="mt-2 text-3xl font-semibold text-primary-100">
+    <div class="glass-card p-5 text-sm text-slate-700">
+      <p class="text-xs uppercase tracking-widest text-slate-400">Admins</p>
+      <p class="mt-2 text-3xl font-semibold text-slate-900">
         @if (loading()) {
-          <span class="inline-flex h-6 w-12 animate-pulse rounded-full bg-slate-700"></span>
+          <span class="inline-flex h-6 w-16 animate-pulse rounded-full bg-slate-200"></span>
+        } @else {
+          {{ summary()?.adminCount ?? 0 | number:'1.0-0' }}
+        }
+      </p>
+      <p class="text-xs text-slate-500">Elevated access</p>
+    </div>
+    <div class="glass-card p-5 text-sm text-slate-700">
+      <p class="text-xs uppercase tracking-widest text-slate-400">Motivational messages</p>
+      <p class="mt-2 text-3xl font-semibold text-slate-900">
+        @if (loading()) {
+          <span class="inline-flex h-6 w-16 animate-pulse rounded-full bg-slate-200"></span>
         } @else {
           {{ summary()?.motivationCount ?? 0 | number:'1.0-0' }}
         }
       </p>
-      <p class="text-xs text-slate-400">Active prompts</p>
-    </div>
-    <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 text-sm text-slate-200">
-      <p class="text-xs uppercase tracking-widest text-slate-500">Cached food items</p>
-      <p class="mt-2 text-3xl font-semibold text-primary-100">
-        @if (loading()) {
-          <span class="inline-flex h-6 w-16 animate-pulse rounded-full bg-slate-700"></span>
-        } @else {
-          {{ summary()?.cachedFoodCount ?? 0 | number:'1.0-0' }}
-        }
-      </p>
-      <p class="text-xs text-slate-400">Synced via cache service</p>
+      <p class="text-xs text-slate-500">Active prompts</p>
     </div>
   </section>
 
-  <section class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+  <section class="glass-card p-6">
     <div class="flex items-center justify-between">
-      <h2 class="text-lg font-semibold text-slate-100">Flagged items</h2>
-      <button class="rounded-lg border border-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:border-primary-400 hover:text-primary-100">
+      <h2 class="text-lg font-semibold text-slate-900">Users</h2>
+      <p class="text-xs text-slate-500">Click a user to view the report</p>
+    </div>
+    <div class="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-white/90">
+      <div class="grid grid-cols-[2fr,1fr,1fr,auto] gap-4 border-b border-slate-200 bg-slate-50 px-4 py-3 text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+        <span>Member</span>
+        <span>Role</span>
+        <span>Joined</span>
+        <span class="text-right">Actions</span>
+      </div>
+      @if (loading()) {
+        <div class="px-4 py-6 text-sm text-slate-500">Loading users…</div>
+      } @else if (users().length) {
+        @for (user of users(); track user.userId) {
+          <div class="grid grid-cols-[2fr,1fr,1fr,auto] gap-4 border-b border-slate-100 px-4 py-3 text-sm text-slate-700 last:border-b-0">
+            <div>
+              <p class="font-semibold text-slate-900">{{ user.displayName }}</p>
+              <p class="text-xs text-slate-500">{{ user.timezone }} · {{ user.activityLevel | titlecase }}</p>
+            </div>
+            <p class="text-xs uppercase tracking-[0.2em] text-slate-500">{{ user.role }}</p>
+            <p class="text-xs text-slate-500">{{ user.createdAt | date:'mediumDate' }}</p>
+            <div class="flex items-center justify-end gap-2">
+              <button
+                type="button"
+                class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:border-sky-300 hover:text-sky-600"
+                (click)="viewReport(user)"
+              >
+                View report
+              </button>
+              <button
+                type="button"
+                class="rounded-lg border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-600 transition hover:border-rose-300 hover:bg-rose-100"
+                [disabled]="deletingUserId() === user.userId"
+                (click)="deleteUser(user)"
+              >
+                @if (deletingUserId() === user.userId) {
+                  Deleting…
+                } @else {
+                  Delete
+                }
+              </button>
+            </div>
+          </div>
+        }
+      } @else {
+        <div class="px-4 py-6 text-sm text-slate-500">No profiles found.</div>
+      }
+    </div>
+  </section>
+
+  <section class="glass-card p-6">
+    <div class="flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-slate-900">Flagged items</h2>
+      <button class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:border-sky-300 hover:text-sky-600">
         View all
       </button>
     </div>
-    <div class="mt-4 space-y-3 text-sm text-slate-200">
+    <div class="mt-4 space-y-3 text-sm text-slate-600">
       @if (loading()) {
-        <div class="rounded-xl border border-slate-800 bg-slate-900/70 p-4 text-xs text-slate-500">
+        <div class="rounded-xl border border-slate-200 bg-white/80 p-4 text-xs text-slate-500">
           Syncing flagged items…
         </div>
       } @else if (flaggedItems().length) {
         @for (item of flaggedItems(); track item.id) {
-          <div class="space-y-1 rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+          <div class="space-y-1 rounded-xl border border-slate-200 bg-white/90 p-4">
             <div class="flex items-center justify-between text-xs text-slate-500">
               <span>{{ item.type | titlecase }}</span>
-              <span class="rounded-full border border-slate-700 px-2 py-0.5 text-[10px] uppercase tracking-widest text-slate-300">{{ item.status | titlecase }}</span>
+              <span class="rounded-full border border-slate-200 px-2 py-0.5 text-[10px] uppercase tracking-widest text-slate-500">{{ item.status | titlecase }}</span>
             </div>
-            <p class="font-semibold text-slate-100">{{ item.reason }}</p>
+            <p class="font-semibold text-slate-800">{{ item.reason }}</p>
             <p class="text-xs text-slate-500">By {{ item.submittedBy }} • {{ item.submittedAt | date:'short' }}</p>
             @if (item.handledBy) {
               <p class="text-[11px] text-slate-500">Handled by {{ item.handledBy }}</p>
@@ -68,7 +131,7 @@
           </div>
         }
       } @else {
-        <p class="rounded-xl border border-dashed border-slate-700 bg-slate-900/40 p-6 text-center text-sm text-slate-400">
+        <p class="rounded-xl border border-dashed border-slate-200 bg-white/70 p-6 text-center text-sm text-slate-500">
           No items require review right now.
         </p>
       }

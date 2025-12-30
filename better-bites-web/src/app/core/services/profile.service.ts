@@ -63,12 +63,18 @@ export class ProfileService {
   private readonly profileSignal = signal<Profile | null>(null);
   private readonly dailyGoalsSignal = signal<DailyGoals | null>(null);
   private readonly latestMeasurementSignal = signal<BodyMeasurement | null>(null);
+  private profileUserId: string | null = null;
+  private goalsUserId: string | null = null;
+  private measurementUserId: string | null = null;
 
   readonly profile = computed(() => this.profileSignal());
   readonly dailyGoals = computed(() => this.dailyGoalsSignal());
   readonly latestMeasurement = computed(() => this.latestMeasurementSignal());
 
-  async loadProfile(userId: string) {
+  async loadProfile(userId: string, options: { force?: boolean } = {}) {
+    if (!options.force && this.profileSignal() && this.profileUserId === userId) {
+      return;
+    }
     const { data, error } = await this.supabase
       .from('profiles')
       .select('*')
@@ -91,10 +97,14 @@ export class ProfileService {
         dateOfBirth: data.date_of_birth,
         role: (data.role ?? 'member') as AuthRole,
       });
+      this.profileUserId = userId;
     }
   }
 
-  async loadDailyGoals(userId: string) {
+  async loadDailyGoals(userId: string, options: { force?: boolean } = {}) {
+    if (!options.force && this.dailyGoalsSignal() && this.goalsUserId === userId) {
+      return;
+    }
     const { data, error } = await this.supabase
       .from('daily_goals')
       .select('*')
@@ -115,6 +125,7 @@ export class ProfileService {
         waterMlTarget: data.water_ml_target,
         stepsTarget: data.steps_target ?? undefined,
       });
+      this.goalsUserId = userId;
     }
   }
 
@@ -220,7 +231,10 @@ export class ProfileService {
     });
   }
 
-  async loadLatestMeasurement(userId: string) {
+  async loadLatestMeasurement(userId: string, options: { force?: boolean } = {}) {
+    if (!options.force && this.latestMeasurementSignal() && this.measurementUserId === userId) {
+      return;
+    }
     const { data, error } = await this.supabase
       .from('body_measurements')
       .select('*')
@@ -246,6 +260,7 @@ export class ProfileService {
         bmi,
         bodyFatPct: data.body_fat_pct,
       });
+      this.measurementUserId = userId;
     }
   }
 

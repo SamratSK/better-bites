@@ -120,39 +120,6 @@
   <section class="flex flex-col gap-6">
     <div class="glass-card p-6">
       <div class="flex items-center justify-between">
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-[0.3em] text-sky-500">Streaks</p>
-          <h3 class="mt-2 text-xl font-semibold text-slate-900">Keep the momentum going</h3>
-        </div>
-        <a routerLink="/streaks" class="inline-flex items-center gap-1 text-xs font-semibold text-sky-600">
-          View details
-          <span class="iconify text-sm" data-icon="mdi:arrow-top-right"></span>
-        </a>
-      </div>
-      <div class="mt-4 grid gap-3">
-        @if (streaks().length) {
-          @for (streak of streaks(); track streak.id) {
-            <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-white/80 px-4 py-3 text-sm text-slate-700">
-              <div class="flex items-center gap-3">
-                <span class="iconify text-xl text-amber-500" data-icon="solar:fire-bold"></span>
-                <div>
-                  <p class="font-semibold text-slate-800">{{ streak.streakType | titlecase }} streak</p>
-                  <p class="text-xs text-slate-500">Best: {{ streak.bestStreak }} days</p>
-                </div>
-              </div>
-              <span class="text-lg font-semibold text-sky-600">{{ streak.currentStreak }} days</span>
-            </div>
-          }
-        } @else {
-          <p class="rounded-xl border border-dashed border-slate-200 bg-white/70 px-4 py-6 text-center text-sm text-slate-500">
-            Once users start logging meals, water, and activity we’ll showcase streak progress here.
-          </p>
-        }
-      </div>
-    </div>
-
-    <div class="glass-card p-6">
-      <div class="flex items-center justify-between">
         <p class="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-500">Today’s progress</p>
         <a routerLink="/tracking/meals" class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600">
           Log items
